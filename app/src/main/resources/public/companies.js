@@ -1,10 +1,11 @@
 const getCompanies = async () => {
 const response = await fetch("http://localhost:8080/api/companies")
-const companies = response.getJson()
+const companies = await response.json()
 
 const companiesTable = document.getElementById('companies-table')
-companies.forEach(company => {
-const row = companiesTable.insertRow()
+
+for(const company of companies) {
+const row = companiesTable.insertRow(-1)
 
 const idCell = row.insertCell(0)
 idCell.innerText = company.id
@@ -23,7 +24,11 @@ healthInsuranceCell.innerText = company.healthInsurance
 
 const pensionInsuranceCell = row.insertCell(5)
 pensionInsuranceCell.innerText = company.pensionInsurance
+<<<<<<< HEAD
 })
+=======
+}
+>>>>>>> c38a40c (First commit of version2)
 }
 
 window.onload = function() {
