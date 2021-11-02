@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.db.DatabaseTest
+import pl.futurecollars.invoicing.db.invoices.sql.SqlDatabase
 
 @SpringBootTest
 @ActiveProfiles("sqlTest")

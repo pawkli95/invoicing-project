@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CompanyDto {
 
-    @ApiModelProperty(value = "Id of company", example = "1002020100")
+    @ApiModelProperty(value = "Id of company", example = "f77de595-58a1-4533-b96b-e493aee29e8a")
     private UUID id;
 
     @ApiModelProperty(value = "Tax identification number of company", required = true, example = "1002020100")

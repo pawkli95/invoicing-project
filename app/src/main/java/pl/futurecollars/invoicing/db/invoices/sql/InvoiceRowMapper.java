@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.sql.rowmapper;
+package pl.futurecollars.invoicing.db.invoices.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import pl.futurecollars.invoicing.db.sql.rowmapper.InvoiceEntriesRowMapper;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;

@@ -7,6 +7,7 @@ import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.service.InvoiceService
+import spock.lang.Shared
 import spock.lang.Specification
 import java.util.function.Predicate
 
@@ -22,7 +23,7 @@ class InvoiceServiceUnitTest extends Specification {
         invoiceService = new InvoiceService(database, invoiceMapper)
     }
 
-    def "calling saveInvoice() should delegate to database save()"() {
+    def "calling saveInvoice() should map dto to entity and delegate to database save()"() {
         when: "we ask invoice service to save invoice"
         invoiceService.saveInvoice(invoiceDto)
 
@@ -30,7 +31,7 @@ class InvoiceServiceUnitTest extends Specification {
         1 * database.save(invoiceMapper.toEntity(invoiceDto))
     }
 
-    def "should get an invoice from database by id"() {
+    def "should get an invoice from database by id and map to dto"() {
         given: "an invoice returned by database"
         Invoice invoice = invoiceMapper.toEntity(invoiceDto)
         database.getById(invoice.getId()) >> invoice
@@ -53,7 +54,7 @@ class InvoiceServiceUnitTest extends Specification {
         list == [invoiceDto]
     }
 
-    def "calling updateInvoice() should delegate to database update()"() {
+    def "calling updateInvoice() should map dto to entity and delegate to database update()"() {
         when: "we ask invoice service to update invoice"
         invoiceService.updateInvoice(invoiceDto)
 
@@ -62,11 +63,14 @@ class InvoiceServiceUnitTest extends Specification {
     }
 
     def "calling deleteInvoice() should delegate to database delete()"() {
+        given:
+        UUID id = UUID.randomUUID()
+
         when: "we ask invoice service to delete invoice"
-        invoiceService.deleteInvoice(null)
+        invoiceService.deleteInvoice(id)
 
         then: "database delete() is called"
-        1 * database.delete(null)
+        1 * database.delete(id)
     }
 
     def "should filter database"() {

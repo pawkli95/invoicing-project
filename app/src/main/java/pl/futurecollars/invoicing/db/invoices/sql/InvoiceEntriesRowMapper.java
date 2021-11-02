@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.sql.rowmapper;
+package pl.futurecollars.invoicing.db.invoices.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

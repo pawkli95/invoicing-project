@@ -24,7 +24,6 @@ abstract class DatabaseTest extends Specification {
         clearDatabase()
     }
 
-
     def "should save invoice to database"() {
         when: "we ask database to save invoice"
         Invoice returnedInvoice = database.save(invoice)
@@ -35,12 +34,6 @@ abstract class DatabaseTest extends Specification {
         response.getBuyer().getTaxIdentificationNumber() == returnedInvoice.getBuyer().getTaxIdentificationNumber()
         response.getSeller().getTaxIdentificationNumber() == returnedInvoice.getSeller().getTaxIdentificationNumber()
     }
-
-    def "should return null if saved invoice is null"() {
-        expect:
-        database.save(null) == null
-    }
-
 
     def "should get invoice by id"() {
         given: "invoice saved in database"

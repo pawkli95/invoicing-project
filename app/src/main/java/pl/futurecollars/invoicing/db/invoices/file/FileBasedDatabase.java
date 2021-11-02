@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.filebased;
+package pl.futurecollars.invoicing.db.invoices.file;
 
 import java.util.ArrayList;
 import java.util.List;

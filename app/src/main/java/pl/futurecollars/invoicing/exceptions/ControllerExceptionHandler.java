@@ -16,4 +16,10 @@ public class ControllerExceptionHandler {
         log.warn("No such element in database");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> nullPointerExceptionHandler(NullPointerException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

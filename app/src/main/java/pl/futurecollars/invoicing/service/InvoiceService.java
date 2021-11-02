@@ -16,27 +16,27 @@ import pl.futurecollars.invoicing.model.Invoice;
 @Service
 public class InvoiceService {
 
-    private final Database<Invoice> fileBasedDatabase;
+    private final Database<Invoice> invoiceDatabase;
     private final InvoiceMapper invoiceMapper;
 
     public InvoiceDto saveInvoice(InvoiceDto invoiceDto) {
         Invoice invoice = invoiceMapper.toEntity(invoiceDto);
-        Invoice returnedInvoice = fileBasedDatabase.save(invoice);
+        Invoice returnedInvoice = invoiceDatabase.save(invoice);
         return invoiceMapper.toDto(returnedInvoice);
     }
 
     public InvoiceDto getById(UUID id) throws NoSuchElementException {
-        return invoiceMapper.toDto(fileBasedDatabase.getById(id));
+        return invoiceMapper.toDto(invoiceDatabase.getById(id));
     }
 
     public List<InvoiceDto> getAll() {
-        return fileBasedDatabase.getAll().stream()
+        return invoiceDatabase.getAll().stream()
                 .map(invoiceMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<InvoiceDto> filter(Predicate<Invoice> predicate) {
-        return fileBasedDatabase.getAll()
+        return invoiceDatabase.getAll()
                 .stream()
                 .filter(predicate)
                 .map(invoiceMapper::toDto)
@@ -44,11 +44,11 @@ public class InvoiceService {
     }
 
     public InvoiceDto updateInvoice(InvoiceDto updatedInvoice) throws NoSuchElementException {
-        Invoice returnedInvoice = fileBasedDatabase.update(invoiceMapper.toEntity(updatedInvoice));
+        Invoice returnedInvoice = invoiceDatabase.update(invoiceMapper.toEntity(updatedInvoice));
         return invoiceMapper.toDto(returnedInvoice);
     }
 
     public void deleteInvoice(UUID id) throws NoSuchElementException {
-        fileBasedDatabase.delete(id);
+        invoiceDatabase.delete(id);
     }
 }

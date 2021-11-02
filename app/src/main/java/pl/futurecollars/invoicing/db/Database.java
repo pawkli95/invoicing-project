@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface Database<T> {
 
-    T save(T invoice);
+    T save(T entity);
 
     T getById(UUID id) throws NoSuchElementException;
 

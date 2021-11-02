@@ -9,20 +9,23 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.db.filebased.FileBasedDatabase;
-import pl.futurecollars.invoicing.db.jpa.InvoiceRepository;
-import pl.futurecollars.invoicing.db.jpa.JpaDatabase;
-import pl.futurecollars.invoicing.db.memory.InMemoryDatabase;
-import pl.futurecollars.invoicing.db.mongo.MongoDatabase;
-import pl.futurecollars.invoicing.db.mongo.MongoDbRepository;
-import pl.futurecollars.invoicing.db.sql.SqlDatabase;
-import pl.futurecollars.invoicing.db.sql.rowmapper.InvoiceRowMapper;
+import pl.futurecollars.invoicing.db.companies.CompanyDatabase;
+import pl.futurecollars.invoicing.db.invoices.file.FileBasedDatabase;
+import pl.futurecollars.invoicing.db.companies.CompanyRepository;
+import pl.futurecollars.invoicing.db.invoices.jpa.InvoiceRepository;
+import pl.futurecollars.invoicing.db.invoices.jpa.JpaDatabase;
+import pl.futurecollars.invoicing.db.invoices.memory.InMemoryDatabase;
+import pl.futurecollars.invoicing.db.invoices.mongo.MongoDatabase;
+import pl.futurecollars.invoicing.db.invoices.mongo.MongoDbRepository;
+import pl.futurecollars.invoicing.db.invoices.sql.SqlDatabase;
+import pl.futurecollars.invoicing.db.invoices.sql.InvoiceRowMapper;
+import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.utils.FileService;
 import pl.futurecollars.invoicing.utils.JsonService;
 
-@EnableJpaRepositories(basePackages = "pl.futurecollars.invoicing.db.jpa")
-@EnableMongoRepositories(basePackages = "pl.futurecollars.invoicing.db.mongo")
+@EnableJpaRepositories(basePackages = {"pl.futurecollars.invoicing.db.invoices.jpa", "pl.futurecollars.invoicing.db.companies"})
+@EnableMongoRepositories(basePackages = "pl.futurecollars.invoicing.db.invoices.mongo")
 @Slf4j
 @Configuration
 public class DatabaseConfiguration {
@@ -70,6 +73,12 @@ public class DatabaseConfiguration {
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "mongo")
     public Database<Invoice> getMongoDatabase(MongoDbRepository mongoDbRepository) {
         return new MongoDatabase(mongoDbRepository);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
+    public Database<Company> getCompanyDatabase(CompanyRepository companyRepository) {
+        return new CompanyDatabase(companyRepository);
     }
 
 }

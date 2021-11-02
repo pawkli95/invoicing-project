@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.mongo;
+package pl.futurecollars.invoicing.db.invoices.mongo;
 
 import java.util.List;
 import java.util.NoSuchElementException;

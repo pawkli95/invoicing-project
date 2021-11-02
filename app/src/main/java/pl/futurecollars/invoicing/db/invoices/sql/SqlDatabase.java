@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.sql;
+package pl.futurecollars.invoicing.db.invoices.sql;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.db.sql.rowmapper.InvoiceRowMapper;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 
