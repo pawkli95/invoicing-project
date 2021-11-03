@@ -3,6 +3,7 @@ package pl.futurecollars.invoicing.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -20,11 +21,14 @@ import pl.futurecollars.invoicing.model.InvoiceEntry;
 @AllArgsConstructor
 public class TaxCalculatorService {
 
-    private final Database<Invoice> database;
+    private final Database<Invoice> invoiceDatabase;
 
-    public TaxCalculation getTaxCalculation(Company company) throws NoSuchElementException {
-        String taxId = company.getTaxIdentificationNumber();
-        if (checkForTaxId(taxId)) {
+    private final Database<Company> companyDatabase;
+
+    public TaxCalculation getTaxCalculation(String taxId) throws NoSuchElementException {
+        Optional<Company> optional = checkForTaxId(taxId);
+        if (optional.isPresent()) {
+            Company company = optional.get();
             return TaxCalculation.builder()
                     .income(income(taxId))
                     .costs(costs(taxId))
@@ -46,7 +50,7 @@ public class TaxCalculatorService {
     }
 
     private BigDecimal calculate(Predicate<Invoice> predicate, Function<InvoiceEntry, BigDecimal> calculationFunction) {
-        return database.getAll().stream()
+        return invoiceDatabase.getAll().stream()
                 .filter(predicate)
                 .flatMap(invoice -> invoice.getInvoiceEntries().stream())
                 .peek(InvoiceEntry::calculateVatValue)
@@ -75,7 +79,7 @@ public class TaxCalculatorService {
     }
 
     private BigDecimal personalCarRelatedValue(Predicate<Invoice> predicate) {
-        return database.getAll()
+        return invoiceDatabase.getAll()
                 .stream()
                 .filter(predicate)
                 .flatMap(i -> i.getInvoiceEntries().stream())
@@ -86,7 +90,7 @@ public class TaxCalculatorService {
     }
 
     private BigDecimal notPersonalCarRelatedVat(Predicate<Invoice> predicate) {
-        return database.getAll()
+        return invoiceDatabase.getAll()
                 .stream()
                 .filter(predicate)
                 .flatMap(i -> i.getInvoiceEntries().stream())
@@ -143,13 +147,10 @@ public class TaxCalculatorService {
         return incomeTaxMinusHealthInsurance(company).setScale(0, RoundingMode.HALF_DOWN);
     }
 
-    private boolean checkForTaxId(String taxId) {
-        Predicate<Invoice> sellerPredicate = invoice -> invoice.getSeller().getTaxIdentificationNumber().equals(taxId);
-        Predicate<Invoice> invoicePredicate = sellerPredicate.or(invoice -> invoice.getBuyer().getTaxIdentificationNumber().equals(taxId));
-        Optional<Invoice> optional = database
-                .getAll().stream()
-                .filter(invoicePredicate)
+    private Optional<Company> checkForTaxId(String taxId) {
+        return companyDatabase.getAll()
+                .stream()
+                .filter(c -> Objects.equals(c.getTaxIdentificationNumber(), taxId))
                 .findAny();
-        return optional.isPresent();
     }
 }

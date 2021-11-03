@@ -6,7 +6,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+@ActiveProfiles("jpaTest")
 abstract class TaxCalculatorControllerTest extends Specification {
 
     @Autowired
@@ -46,7 +49,7 @@ abstract class TaxCalculatorControllerTest extends Specification {
 
     def "should calculate tax without personal car expenses"() {
         given:
-        deleteInvoices()
+        clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
         String companyJson = companyJsonService.write(company1).getJson()
 
@@ -150,6 +153,11 @@ abstract class TaxCalculatorControllerTest extends Specification {
                         .content(jsonString))
     }
 
+    void clearDatabase() {
+        deleteInvoices()
+        deleteCompanies()
+    }
+
     void deleteInvoices() {
         def response = mockMvc
                 .perform(get("/api/invoices"))
@@ -167,4 +175,18 @@ abstract class TaxCalculatorControllerTest extends Specification {
         mockMvc
                 .perform(delete("/api/invoices/" + id))
     }
+
+    void deleteCompanies() {
+        def response = mockMvc
+                .perform(get("/api/companies"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+        List<CompanyDto> list = invoiceListService.parseObject(response)
+        for(InvoiceDto i : list) {
+            deleteInvoice(i)
+        }
+    }
+
+
 }

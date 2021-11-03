@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Companies</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="/companies.js"></script>
+    <script src="/main.js"></script>
 </head>
 <body>
 <table id = 'companies-table' class = 'table table-striped'>
@@ -20,18 +20,18 @@
 <br>
 <br>
 
-<form action="http://localhost:8080/api/companies" method="post">
+<form name = "form" id="form">
     <label>Tax identification number</label><br>
-    <input type="text" name="taxId"><br><br>
+    <input type="text" name="taxIdentificationNumber"><br><br>
     <label>Company name</label><br>
     <input type="text" name = "name"><br><br>
     <label>Address</label><br>
     <input type="text" name = "address"><br><br>
     <label>Health insurance</label><br>
-    <input type="text" name="health insurance"><br><br>
+    <input type="text" name="healthInsurance"><br><br>
     <label>Pension insurance</label><br>
-    <input type="text" name="pension insurance"><br><br>
-    <input type="submit" value="Wyślij">
+    <input type="text" name="pensionInsurance"><br><br>
+    <input type="submit" value="Add company">
 </form>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.invoices.jpa;
+package pl.futurecollars.invoicing.db.invoices;
 
 import java.util.List;
 import java.util.NoSuchElementException;

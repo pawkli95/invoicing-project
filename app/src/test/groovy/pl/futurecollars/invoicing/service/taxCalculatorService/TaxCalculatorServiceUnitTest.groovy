@@ -3,7 +3,6 @@ package pl.futurecollars.invoicing.service.taxCalculatorService
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
-import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.dto.TaxCalculation
@@ -14,9 +13,11 @@ import java.time.LocalDateTime
 
 class TaxCalculatorServiceUnitTest extends Specification {
 
-    Database database = Mock()
+    Database<Invoice> invoiceDatabase = Mock()
 
-    TaxCalculatorService taxCalculatorService = new TaxCalculatorService(database)
+    Database<Company> companyDatabase = Mock()
+
+    TaxCalculatorService taxCalculatorService = new TaxCalculatorService(invoiceDatabase, companyDatabase)
 
     def "should calculate tax without personal car expenses"() {
         given: "invoices in database without personal car expenses"
@@ -24,10 +25,11 @@ class TaxCalculatorServiceUnitTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Invoice invoice1 = new Invoice(UUID.randomUUID(),"number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
-        database.getAll() >> [invoice1, invoice2]
+        invoiceDatabase.getAll() >> [invoice1, invoice2]
+        companyDatabase.getAll() >> [company1]
 
         when:"we ask tax calculator service to calculate tax"
-        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1)
+        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
         then:"tax is calculated accurately"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
@@ -52,10 +54,11 @@ class TaxCalculatorServiceUnitTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
-        database.getAll() >> [invoice1, invoice2]
+        invoiceDatabase.getAll() >> [invoice1, invoice2]
+        companyDatabase.getAll() >> [company1]
 
         when:"we ask tax calculator service to calculate tax"
-        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1)
+        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
         then:"tax is calculated accurately"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
@@ -76,11 +79,11 @@ class TaxCalculatorServiceUnitTest extends Specification {
 
     def "should throw NoSuchElement exception when tax id is not in database"() {
         given:"an empty database"
-        database.getAll() >> []
+        companyDatabase.getAll() >> Collections.emptyList()
         Company company = CompanyFixture.getCompany()
 
         when:"we ask tax calculator service to calculate tax"
-        taxCalculatorService.getTaxCalculation(company)
+        taxCalculatorService.getTaxCalculation(company.getTaxIdentificationNumber())
 
         then:"NoSuchElementException is thrown"
         thrown(NoSuchElementException)

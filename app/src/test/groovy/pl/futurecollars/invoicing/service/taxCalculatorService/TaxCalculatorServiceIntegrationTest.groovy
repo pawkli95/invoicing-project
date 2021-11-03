@@ -1,5 +1,8 @@
 package pl.futurecollars.invoicing.service.taxCalculatorService
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
@@ -11,29 +14,29 @@ import spock.lang.Shared
 import spock.lang.Specification
 import java.time.LocalDateTime
 
-abstract class TaxCalculatorServiceIntegrationTest extends Specification {
+@SpringBootTest
+@ActiveProfiles("jpaTest")
+class TaxCalculatorServiceIntegrationTest extends Specification {
 
-    Database<Invoice> database;
+    @Autowired
+    Database<Invoice> invoiceDatabase
 
+    @Autowired
+    Database<Company> companyDatabase
+
+    @Autowired
     TaxCalculatorService taxCalculatorService
 
     @Shared
     Company company1 = CompanyFixture.getCompany()
 
-    abstract Database getDatabase();
-
-    def setup() {
-        database = getDatabase()
-        taxCalculatorService = new TaxCalculatorService(database)
-    }
-
     def "should calculate tax without personal car expenses"() {
         given:
-        deleteInvoices()
+        clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
         when:
-        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1)
+        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
         then:
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
@@ -54,11 +57,11 @@ abstract class TaxCalculatorServiceIntegrationTest extends Specification {
 
     def "should calculate tax with personal car expenses"() {
         given:
-        deleteInvoices()
+        clearDatabase()
         addInvoicesWithPersonalCarEntries()
 
         when:
-        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1)
+        TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
         then:
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
@@ -79,10 +82,10 @@ abstract class TaxCalculatorServiceIntegrationTest extends Specification {
 
     def "should throw NoSuchElementException when tax id is not in database"() {
         given:
-        deleteInvoices()
+        clearDatabase()
 
         when:
-        taxCalculatorService.getTaxCalculation(company1)
+        taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
         then:
         thrown(NoSuchElementException)
@@ -90,24 +93,40 @@ abstract class TaxCalculatorServiceIntegrationTest extends Specification {
 
     void addInvoicesWithPersonalCarEntries() {
         Company company2 = CompanyFixture.getCompany()
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
-        database.save(invoice1)
-        database.save(invoice2)
+        Company c1 = companyDatabase.save(company1)
+        Company c2 = companyDatabase.save(company2)
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+        invoiceDatabase.save(invoice1)
+        invoiceDatabase.save(invoice2)
     }
 
     void addInvoicesWithoutPersonalCarEntries() {
         Company company2 = CompanyFixture.getCompany()
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
-        database.save(invoice1)
-        database.save(invoice2)
+        Company c1 = companyDatabase.save(company1)
+        Company c2 = companyDatabase.save(company2)
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
+        invoiceDatabase.save(invoice1)
+        invoiceDatabase.save(invoice2)
+    }
+
+    void clearDatabase() {
+        deleteInvoices()
+        deleteCompanies()
     }
 
     void deleteInvoices() {
-        List<Invoice> list = database.getAll()
+        List<Invoice> list = invoiceDatabase.getAll()
         for(Invoice i : list) {
-            database.delete(i.getId())
+            invoiceDatabase.delete(i.getId())
+        }
+    }
+
+    void deleteCompanies() {
+        List<Company> list = companyDatabase.getAll()
+        for(Company c : list) {
+            companyDatabase.delete(c.getId())
         }
     }
 }

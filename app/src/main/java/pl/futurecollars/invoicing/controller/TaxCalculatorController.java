@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +24,9 @@ public class TaxCalculatorController {
     private final TaxCalculatorService taxCalculatorService;
 
     @ApiOperation(value = "Get tax calculation")
-    @PostMapping
-    public ResponseEntity<TaxCalculation> getTaxCalculation(@RequestBody Company company) {
+    @PostMapping("/{taxId}")
+    public ResponseEntity<TaxCalculation> getTaxCalculation(@PathVariable String taxId ) {
         log.debug("Getting tax calculation");
-        return ResponseEntity.ok().body(taxCalculatorService.getTaxCalculation(company));
+        return ResponseEntity.ok().body(taxCalculatorService.getTaxCalculation(taxId));
     }
 }

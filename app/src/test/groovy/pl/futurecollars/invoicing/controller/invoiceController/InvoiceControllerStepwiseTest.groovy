@@ -9,8 +9,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.dto.InvoiceDto
+import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Invoice
+import pl.futurecollars.invoicing.model.InvoiceEntry
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -21,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @Stepwise
-@ActiveProfiles("fileTest")
+@ActiveProfiles("jpaTest")
 class InvoiceControllerStepwiseTest extends Specification {
 
     @Autowired
@@ -35,6 +37,11 @@ class InvoiceControllerStepwiseTest extends Specification {
 
     @Shared InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
     @Shared InvoiceDto updatedInvoiceDto = InvoiceFixture.getInvoiceDto()
+
+    def setupSpec() {
+        invoiceDto.setInvoiceEntries(List.of(InvoiceEntryFixture.getInvoiceEntry(1)))
+        updatedInvoiceDto.setInvoiceEntries(List.of(InvoiceEntryFixture.getInvoiceEntry(1)))
+    }
 
     def "should return empty list"() {
         given:
@@ -67,8 +74,15 @@ class InvoiceControllerStepwiseTest extends Specification {
                 .getResponse()
                 .getContentAsString()
 
+        def responseInvoice = jsonInvoiceService.parseObject(response)
+        invoiceDto.setId(responseInvoice.getId())
+        invoiceDto.getSeller().setId(responseInvoice.getSeller().getId())
+        invoiceDto.getBuyer().setId(responseInvoice.getBuyer().getId())
+        invoiceDto.getInvoiceEntries().get(0).setId(responseInvoice.getInvoiceEntries().get(0).getId())
+
+
         then:
-        jsonInvoiceService.parseObject(response) == invoiceDto
+        invoiceDto == responseInvoice
     }
 
     def "should return invoice by id"() {
@@ -145,12 +159,23 @@ class InvoiceControllerStepwiseTest extends Specification {
         updatedInvoiceDto.setId(invoiceDto.getId())
         String updatedJsonString = jsonInvoiceService.write(updatedInvoiceDto).getJson()
 
-        expect:
-        mockMvc
+        when:
+        def response = mockMvc
                 .perform(put("/api/invoices/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedJsonString))
                 .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+        def responseInvoice = jsonInvoiceService.parseObject(response)
+        updatedInvoiceDto.getSeller().setId(responseInvoice.getSeller().getId())
+        updatedInvoiceDto.getBuyer().setId(responseInvoice.getBuyer().getId())
+        updatedInvoiceDto.getInvoiceEntries().get(0).setId(responseInvoice.getInvoiceEntries().get(0).getId())
+
+        then:
+        responseInvoice == updatedInvoiceDto
+
     }
 
     def "should return updated invoice by id"() {
@@ -227,5 +252,11 @@ class InvoiceControllerStepwiseTest extends Specification {
             UUID id = invoice.getId()
             deleteInvoice(id)
         }
+    }
+
+    static void sortInvoiceEntries(InvoiceDto invoiceDto1, InvoiceDto invoiceDto2) {
+        Comparator<InvoiceEntry> comparator = (o1, o2) -> { o1.getId().compareTo(o2.getId()) }
+        invoiceDto1.getInvoiceEntries().sort(comparator)
+        invoiceDto2.getInvoiceEntries().sort(comparator)
     }
 }
