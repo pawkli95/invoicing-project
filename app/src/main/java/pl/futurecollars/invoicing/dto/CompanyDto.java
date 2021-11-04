@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,11 +32,11 @@ public class CompanyDto {
     @ApiModelProperty(value = "Address of company", required = true, example = "ul. Krótka 22, Warszawa 04-988")
     private String address;
 
-    @NotBlank
+    @NotNull
     @ApiModelProperty(value = "Health insurance", required = true, example = "4250.9")
     private BigDecimal healthInsurance;
 
-    @NotBlank
+    @NotNull
     @ApiModelProperty(value = "Pension insurance", required = true, example = "900.3")
     private BigDecimal pensionInsurance;
 }
