@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Add new company")
     @PostMapping
-    public ResponseEntity<CompanyDto> save(@RequestBody CompanyDto companyDto) {
+    public ResponseEntity<CompanyDto> save(@RequestBody @Valid CompanyDto companyDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.saveCompany(companyDto));
     }
 
@@ -46,7 +47,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Update company")
     @PutMapping
-    public ResponseEntity<CompanyDto> update(@RequestBody CompanyDto companyDto) {
+    public ResponseEntity<CompanyDto> update(@RequestBody @Valid CompanyDto companyDto) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.update(companyDto));
     }
 
