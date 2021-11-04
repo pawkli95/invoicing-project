@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.PostgreSQLContainer
 import pl.futurecollars.invoicing.db.Database
+import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Subject
 
 @ActiveProfiles("testcontainer")
@@ -23,7 +24,7 @@ class InvoiceServiceJpaPostgresTest extends InvoiceServiceAbstractIntegrationTes
     }
 
     @Autowired
-    Database jpaDatabase
+    Database<Invoice> jpaDatabase
 
     @Override
     Database getDatabase() {

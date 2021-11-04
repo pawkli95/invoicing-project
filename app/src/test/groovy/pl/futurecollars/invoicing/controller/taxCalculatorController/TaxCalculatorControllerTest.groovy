@@ -10,10 +10,10 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.InvoiceDto
+import pl.futurecollars.invoicing.dto.mappers.CompanyMapper
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.model.Company
-import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.dto.TaxCalculation
 import spock.lang.Shared
 import spock.lang.Specification
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @ActiveProfiles("jpaTest")
-abstract class TaxCalculatorControllerTest extends Specification {
+class TaxCalculatorControllerTest extends Specification {
 
     @Autowired
     MockMvc mockMvc
@@ -37,27 +37,25 @@ abstract class TaxCalculatorControllerTest extends Specification {
     JacksonTester<TaxCalculation> taxCalculationJsonService
 
     @Autowired
-    JacksonTester<List<InvoiceDto>> invoiceListService
+    JacksonTester<List<InvoiceDto>> invoiceListJsonService
 
     @Autowired
-    JacksonTester<Company> companyJsonService
+    JacksonTester<CompanyDto> companyJsonService
+
+    @Autowired
+    JacksonTester<List<CompanyDto>> companyListJsonService
 
     @Shared
-    Company company1 = CompanyFixture.getCompany()
-    @Shared
-    Company company3 = CompanyFixture.getCompany()
+    CompanyDto company1 = CompanyFixture.getCompanyDto()
 
     def "should calculate tax without personal car expenses"() {
         given:
         clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
-        String companyJson = companyJsonService.write(company1).getJson()
 
         when:
         def response = mockMvc
-                .perform(post("/api/tax")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(companyJson))
+                .perform(post("/api/tax/" + company1.getTaxIdentificationNumber()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -85,13 +83,10 @@ abstract class TaxCalculatorControllerTest extends Specification {
         given:
         deleteInvoices()
         addInvoicesWithPersonalCarEntries()
-        String companyJson = companyJsonService.write(company1).getJson()
 
         when:
         def response = mockMvc
-                .perform(post("/api/tax")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(companyJson))
+                .perform(post("/api/tax/" + company1.getTaxIdentificationNumber()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -118,19 +113,19 @@ abstract class TaxCalculatorControllerTest extends Specification {
 
     def "should return 404 NotFound http status when tax id doesn't exist"() {
         given:
-        deleteInvoices()
-        String companyJson = companyJsonService.write(company1).getJson()
+        clearDatabase()
+        String invalidTaxId = "1234567890"
 
         expect:
                  mockMvc
-                .perform(post("/api/tax/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(companyJson))
+                .perform(post("/api/tax/" + invalidTaxId))
                 .andExpect(status().isNotFound())
     }
 
     void addInvoicesWithPersonalCarEntries() {
-        Company company2 = CompanyFixture.getCompany()
+        CompanyDto company2 = CompanyFixture.getCompanyDto()
+        company1 = addCompany(company1)
+        company2 = addCompany(company2)
         InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
         InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
         addInvoice(invoice1)
@@ -138,7 +133,9 @@ abstract class TaxCalculatorControllerTest extends Specification {
     }
 
     void addInvoicesWithoutPersonalCarEntries() {
-        Company company2 = CompanyFixture.getCompany()
+        CompanyDto company2 = CompanyFixture.getCompanyDto()
+        company1 = addCompany(company1)
+        company2 = addCompany(company2)
         InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
         InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
         addInvoice(invoice1)
@@ -153,6 +150,19 @@ abstract class TaxCalculatorControllerTest extends Specification {
                         .content(jsonString))
     }
 
+     CompanyDto addCompany(CompanyDto companyDto) {
+        String jsonString = companyJsonService.write(companyDto).getJson()
+        def response = mockMvc
+                .perform(post("/api/companies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonString))
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+            return companyJsonService.parseObject(response)
+
+    }
+
     void clearDatabase() {
         deleteInvoices()
         deleteCompanies()
@@ -164,16 +174,15 @@ abstract class TaxCalculatorControllerTest extends Specification {
                 .andReturn()
                 .getResponse()
                 .getContentAsString()
-        List<InvoiceDto> list = invoiceListService.parseObject(response)
+        List<InvoiceDto> list = invoiceListJsonService.parseObject(response)
         for(InvoiceDto i : list) {
-            deleteInvoice(i)
+            deleteInvoice(i.getId())
         }
     }
 
-    void deleteInvoice(InvoiceDto invoice) {
-        String id = invoice.getId().toString()
+    void deleteInvoice(UUID id) {
         mockMvc
-                .perform(delete("/api/invoices/" + id))
+                .perform(delete("/api/invoices/" + id.toString()))
     }
 
     void deleteCompanies() {
@@ -182,10 +191,14 @@ abstract class TaxCalculatorControllerTest extends Specification {
                 .andReturn()
                 .getResponse()
                 .getContentAsString()
-        List<CompanyDto> list = invoiceListService.parseObject(response)
-        for(InvoiceDto i : list) {
-            deleteInvoice(i)
+        List<CompanyDto> list = companyListJsonService.parseObject(response)
+        for(CompanyDto c : list) {
+            deleteCompany(c.getId())
         }
+    }
+
+    void deleteCompany(UUID id) {
+        mockMvc.perform(delete("/api/companies/" + id.toString()))
     }
 
 

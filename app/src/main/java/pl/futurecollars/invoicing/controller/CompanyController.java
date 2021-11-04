@@ -2,6 +2,8 @@ package pl.futurecollars.invoicing.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.CompanyDto;
 import pl.futurecollars.invoicing.service.CompanyService;
-import java.util.List;
-import java.util.UUID;
 
-@Api(tags={"company-controller"})
+@Api(tags = {"company-controller"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/companies")

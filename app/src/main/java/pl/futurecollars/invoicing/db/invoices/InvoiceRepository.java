@@ -9,7 +9,7 @@ import pl.futurecollars.invoicing.model.Invoice;
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 
     @Override
-    @Query("select distinct i from Invoice i left join fetch i.invoiceEntries left join fetch " +
-            "i.seller left join fetch i. buyer")
+    @Query("select distinct i from Invoice i left join fetch i.invoiceEntries left join fetch "
+            + "i.seller left join fetch i. buyer")
     List<Invoice> findAll();
 }

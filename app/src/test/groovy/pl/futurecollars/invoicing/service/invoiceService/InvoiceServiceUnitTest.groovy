@@ -14,7 +14,7 @@ import java.util.function.Predicate
 class InvoiceServiceUnitTest extends Specification {
 
     Database database;
-    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
+    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
     InvoiceService invoiceService
     InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
 

@@ -17,7 +17,7 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
 
     InvoiceService invoiceService
 
-    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
+    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
 
     InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
 
@@ -36,7 +36,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
         then: "invoice is saved in database"
         Invoice response = database.getById(returnedInvoiceDto.getId())
         InvoiceDto responseDto = invoiceMapper.toDto(response)
-        sortInvoiceEntries(responseDto, returnedInvoiceDto)
         responseDto == returnedInvoiceDto
     }
 
@@ -50,7 +49,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
         InvoiceDto responseDto = invoiceService.getById(returnedInvoice.getId())
 
         then: "invoice is returned"
-        sortInvoiceEntries(returnedInvoiceDto, responseDto)
         returnedInvoiceDto == responseDto
     }
 
@@ -70,7 +68,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
         List<InvoiceDto> invoiceList = invoiceService.getAll()
 
         then: "list od invoices is returned"
-        sortInvoiceEntries(returnedInvoiceDto, invoiceList.get(0))
         invoiceList.size() == 1
         invoiceList.get(0) == returnedInvoiceDto
     }
@@ -92,7 +89,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
         List<InvoiceDto> invoiceList = invoiceService.filter(invoicePredicate)
 
         then: "database is filtered"
-        sortInvoiceEntries(returnedInvoiceDto, invoiceList.get(0))
         invoiceList.size() == 1
         invoiceList.get(0) == returnedInvoiceDto
     }
@@ -103,7 +99,7 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
             Invoice returnedInvoice = database.save(invoice)
 
             and: "updated invoice"
-            InvoiceDto updatedInvoice = InvoiceFixture.getInvoiceDto()
+            InvoiceDto updatedInvoice = InvoiceFixture.getInvoiceDto(1)
             updatedInvoice.setId(returnedInvoice.getId())
 
             when: "we ask invoice service to update database"
@@ -111,7 +107,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
 
             then: "database is updated"
             InvoiceDto responseDto = invoiceService.getById(returnedInvoiceDto.getId())
-            sortInvoiceEntries(responseDto, returnedInvoiceDto)
             responseDto == returnedInvoiceDto
         }
 
@@ -125,7 +120,7 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
 
         def "should delete invoice from database"() {
             given: "invoice saved to database"
-            Invoice invoice = InvoiceFixture.getInvoice()
+            Invoice invoice = InvoiceFixture.getInvoice(1)
             Invoice returnedInvoice = database.save(invoice)
 
             when: "we ask invoice service to delete invoice"
@@ -147,12 +142,6 @@ abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
             for (Invoice invoice : database.getAll()) {
                 database.delete(invoice.getId())
             }
-        }
-
-        static void sortInvoiceEntries(InvoiceDto invoiceDto1, InvoiceDto invoiceDto2) {
-            Comparator<InvoiceEntry> comparator = (o1, o2) -> { o1.getId().compareTo(o2.getId()) }
-            invoiceDto1.getInvoiceEntries().sort(comparator)
-            invoiceDto2.getInvoiceEntries().sort(comparator)
         }
 }
 

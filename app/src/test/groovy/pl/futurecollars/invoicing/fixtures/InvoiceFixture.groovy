@@ -13,7 +13,7 @@ class InvoiceFixture {
     static InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
     static int number = 0;
 
-    static Invoice getInvoice() {
+    static Invoice getInvoice(int numberOfEntries) {
         number++;
         return Invoice.builder()
                 .id(UUID.randomUUID())
@@ -21,12 +21,12 @@ class InvoiceFixture {
                 .seller(CompanyFixture.getCompany())
                 .buyer(CompanyFixture.getCompany())
                 .number(String.valueOf(number))
-                .invoiceEntries(InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+                .invoiceEntries(InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(numberOfEntries))
                 .build()
     }
 
-    static InvoiceDto getInvoiceDto() {
-        return invoiceMapper.toDto(getInvoice());
+    static InvoiceDto getInvoiceDto(int numberOfInvoiceEntries) {
+        return invoiceMapper.toDto(getInvoice(numberOfInvoiceEntries));
     }
 
     static Invoice getInvoiceWithoutId() {

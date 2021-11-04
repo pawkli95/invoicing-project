@@ -28,7 +28,7 @@ abstract class InvoiceControllerIntegrationTest extends Specification{
     @Autowired
     JacksonTester<List<InvoiceDto>> jsonListService
 
-    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
+    InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
 
     def setup() {
         deleteAllInvoices()
@@ -60,13 +60,15 @@ abstract class InvoiceControllerIntegrationTest extends Specification{
                 .andReturn()
                 .getResponse()
                 .getContentAsString()
+        InvoiceDto responseDto = jsonService.parseObject(response)
+        invoiceDto.setId(responseDto.getId())
+        invoiceDto.getSeller().setId(responseDto.getSeller().getId())
+        invoiceDto.getBuyer().setId(responseDto.getBuyer().getId())
+        invoiceDto.getInvoiceEntries().get(0).setId(responseDto.getInvoiceEntries().get(0).getId())
+
 
         then:
-        jsonService.parseObject(response).getNumber() == invoiceDto.getNumber()
-        jsonService.parseObject(response).getSeller().getTaxIdentificationNumber()
-                == invoiceDto.getSeller().getTaxIdentificationNumber()
-        jsonService.parseObject(response).getBuyer().getTaxIdentificationNumber()
-                == invoiceDto.getBuyer().getTaxIdentificationNumber()
+        responseDto == invoiceDto
     }
 
     def "should return list of all invoices"() {
@@ -128,7 +130,7 @@ abstract class InvoiceControllerIntegrationTest extends Specification{
         given:
         def invoices = addInvoices(3)
         InvoiceDto invoiceToUpdate = invoices[1]
-        InvoiceDto updatedInvoice = InvoiceFixture.getInvoiceDto()
+        InvoiceDto updatedInvoice = InvoiceFixture.getInvoiceDto(1)
         updatedInvoice.setId(invoiceToUpdate.getId())
         String jsonString = jsonService.write(updatedInvoice).getJson()
 
@@ -277,7 +279,7 @@ abstract class InvoiceControllerIntegrationTest extends Specification{
     private List<InvoiceDto> addInvoices(int number) {
         List<InvoiceDto> invoiceList = new ArrayList<>()
         for(int i = 0; i < number; i++) {
-            InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
+            InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
             String jsonString = jsonService.write(invoiceDto).getJson()
             def response = mockMvc.perform(post("/api/invoices").contentType(MediaType.APPLICATION_JSON).content(jsonString))
             .andReturn().getResponse().getContentAsString()
