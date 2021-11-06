@@ -2,7 +2,7 @@ package pl.futurecollars.invoicing.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
@@ -29,9 +29,8 @@ public class InvoiceDto {
     @ApiModelProperty(value = "Invoice number(given by user)", required = true, example = "12/07/19999329")
     private String number;
 
-    @NotNull
-    @ApiModelProperty(value = "Date of invoice creation", required = true, example = "2021-09-10T14:49:35.9239111")
-    private LocalDateTime date;
+    @ApiModelProperty(value = "Date of invoice creation", required = true, example = "2021-09-10")
+    private LocalDate date;
 
     @NotNull
     @ApiModelProperty(value = "Company who sold the product", required = true)

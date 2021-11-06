@@ -1,0 +1,30 @@
+<div>
+<h1>List of companies</h1>
+<input type="text" class="form-control" [(ngModel)] = "searchText" placeholder="Search">
+<table class = "table table-striped border mt-1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Tax id</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor = "let item of list | company: searchText">
+            <td>{{item.name}}</td>
+            <td>{{item.taxIdentificationNumber}}</td>
+            <td><button class = "btn btn-primary" (click) = "goToCompanyDetails(item.id)">Details</button></td>
+            <td><button class = "btn btn-info" (click)="goToInvoices(item.taxIdentificationNumber)">Invoices</button></td>
+            <td><button class = "btn btn-info" (click) = "goToTaxReport(item.taxIdentificationNumber)">Generate tax report</button></td>
+            <td>
+                <button *ngIf="!checkIfCompanyHaveInvoices(item.id)" id="delete" class = "btn btn-danger" (click) = "delete(item.id)">Delete</button>
+                <small *ngIf="checkIfCompanyHaveInvoices(item.id)" class="text-danger">To delete company, delete related invoices first</small>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<button id = "save-button" class = "btn btn-primary" (click) = "goToSave()">Add company</button>

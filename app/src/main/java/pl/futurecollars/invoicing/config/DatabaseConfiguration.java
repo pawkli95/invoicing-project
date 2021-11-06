@@ -20,7 +20,7 @@ public class DatabaseConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
-    public Database<Invoice> getJpaDatabase(InvoiceRepository invoiceRepository) {
+    public Database<Invoice> getInvoiceDatabase(InvoiceRepository invoiceRepository) {
         return new InvoiceDatabase(invoiceRepository);
     }
 

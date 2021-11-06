@@ -1,0 +1,64 @@
+<br>
+<br>
+<br>
+<h1>Invoice details</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Issue date</th>
+            <th>Seller</th>
+            <th>Buyer</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{invoice.number}}</td>
+            <td>{{invoice.date}}</td>
+            <td>{{invoice.seller.name + ' - ' + invoice.seller.taxIdentificationNumber}}</td>
+            <td>{{invoice.buyer.name + ' - ' + invoice.buyer.taxIdentificationNumber}}</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<h2>Invoice entries</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Vat rate</th>
+            <th>Vat value</th>
+            <th>Personal car</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let entry of invoice.invoiceEntries">
+        <td>{{entry.description}}</td>
+        <td>{{entry.price}}</td>
+        <td>{{entry.vatRate}}</td>
+        <td>{{entry.vatValue}}</td>
+        <td>{{entry.personalCar}}</td>
+    </tr>
+    </tbody>
+</table>
+<table class = "table table-striped">
+    <thead>
+        <tr>
+            <th>Total price</th>
+            <th>Total vat value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{totalPrice()}}</td>
+            <td>{{totalVat()}}</td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<button class = "btn btn-primary" (click) = "goToUpdate(invoice.id)">Update invoice</button>
+<button class = "btn btn-info" (click) = "goBack()">Go back</button>

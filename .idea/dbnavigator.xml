@@ -33,7 +33,16 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="cb8b3074-487a-49b1-851b-35075984e53a">
-      <console name="Connection2" type="STANDARD" schema="public" session="Pool"><![CDATA[delete from companies where id = '9fe01623-195b-4189-ba3b-31781542c7d9';]]></console>
+      <console name="Connection2" type="STANDARD" schema="public" session="Pool"><![CDATA[delete from invoices where id in ('f76de595-58a1-4533-b96b-e493aee29e8b',
+'f0d4082d-9d63-4736-996d-a90918c8b039', 
+'f05b7a8f-18d9-4f3e-b798-c47e4e520313',
+'36e9f45d-ba30-4e14-8c1f-f14b6401a4d0',
+'350dc862-5abe-40db-83ba-db1a7b76e648',
+'c53155b6-088b-486d-af0a-88b858797f65',
+'c27097d6-2b6e-4a30-84e7-901800d16c4b',
+'18578352-a98c-41b2-8a20-14941c668497',
+'90bcad77-a86f-4b69-8fd4-f23de814a767'
+)]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">

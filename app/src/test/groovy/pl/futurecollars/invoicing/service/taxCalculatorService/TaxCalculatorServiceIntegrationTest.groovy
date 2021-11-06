@@ -12,7 +12,7 @@ import pl.futurecollars.invoicing.dto.TaxCalculation
 import pl.futurecollars.invoicing.service.TaxCalculatorService
 import spock.lang.Shared
 import spock.lang.Specification
-import java.time.LocalDateTime
+import java.time.LocalDate;
 
 @SpringBootTest
 @ActiveProfiles("jpaTest")
@@ -95,8 +95,8 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Company c1 = companyDatabase.save(company1)
         Company c2 = companyDatabase.save(company2)
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
         invoiceDatabase.save(invoice1)
         invoiceDatabase.save(invoice2)
     }
@@ -105,8 +105,8 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Company c1 = companyDatabase.save(company1)
         Company c2 = companyDatabase.save(company2)
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
         invoiceDatabase.save(invoice1)
         invoiceDatabase.save(invoice2)
     }

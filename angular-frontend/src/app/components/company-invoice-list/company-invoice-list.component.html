@@ -1,0 +1,50 @@
+<div class="div1">
+    <h1>Invoices of company {{companyName}}</h1>
+    <div class="div2">
+    <h2>Invoices as seller</h2>
+    <table class="table table-striped border mt-1">
+        <thead>
+            <tr>
+            <th>Invoice number</th>
+            <th>Buyer</th>
+            <th>Issue date</th>
+            <th></th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let invoice of invoicesAsSeller">
+                <td>{{invoice.number}}</td>
+                <td>{{invoice.buyer.name + ' - ' + invoice.buyer.taxIdentificationNumber}}</td>
+                <td>{{invoice.date}}</td>
+                <td><button class="btn btn-primary" (click) = "goToDetails(invoice.id)">Details</button></td>
+                <td><button class="btn btn-danger" (click) = "deleteInvoiceAsSeller(invoice.id)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="div2">
+    <h2>Invoices as buyer</h2>
+    <table class="table table-striped border mt-1">
+        <thead>
+            <tr>
+            <th>Invoice number</th>
+            <th>Seller</th>
+            <th>Issue date</th>
+            <th></th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let invoice of invoicesAsBuyer">
+                <td>{{invoice.number}}</td>
+                <td>{{invoice.buyer.name + ' - ' + invoice.buyer.taxIdentificationNumber}}</td>
+                <td>{{invoice.date}}</td>
+                <td><button class="btn btn-primary" (click) = "goToDetails(invoice.id)">Details</button></td>
+                <td><button class="btn btn-danger" (click) = "deleteInvoiceAsBuyer(invoice.id)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+

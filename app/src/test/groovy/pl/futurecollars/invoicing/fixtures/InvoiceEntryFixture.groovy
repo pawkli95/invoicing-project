@@ -26,6 +26,7 @@ class InvoiceEntryFixture {
         for(int i = 1; i <= number; i++) {
             list.add(getInvoiceEntryWithPersonalCar(i))
         }
+        list.forEach(entry -> entry.calculateVatValue())
         return list;
     }
 
@@ -44,6 +45,7 @@ class InvoiceEntryFixture {
         for(int i = 1; i <= number; i++) {
             list.add(getInvoiceEntry(i))
         }
+        list.forEach(entry -> entry.calculateVatValue())
         return list;
     }
 }
