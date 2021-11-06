@@ -5,6 +5,7 @@ import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
 import pl.futurecollars.invoicing.model.Invoice
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -17,7 +18,7 @@ class InvoiceFixture {
         number++;
         return Invoice.builder()
                 .id(UUID.randomUUID())
-                .date(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
+                .date(LocalDate.now())
                 .seller(CompanyFixture.getCompany())
                 .buyer(CompanyFixture.getCompany())
                 .number(String.valueOf(number))
@@ -33,7 +34,7 @@ class InvoiceFixture {
         number++;
         return Invoice.builder()
                 .number("12/12/20002")
-                .date(LocalDateTime.now())
+                .date(LocalDate.now())
                 .seller(CompanyFixture.getCompany())
                 .buyer(CompanyFixture.getCompany())
                 .invoiceEntries(InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))

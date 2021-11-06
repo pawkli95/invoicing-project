@@ -1,0 +1,26 @@
+<div class = "div1">
+<h1>List of invoices</h1>
+<table class = "table table-striped">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Issue date</th>
+            <th>Seller</th>
+            <th>Buyer</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of invoices">
+            <td>{{item.number}}</td>
+            <td>{{item.date}}</td>
+            <td>{{item.seller.name + ' - ' + item.seller.taxIdentificationNumber}}</td>
+            <td>{{item.buyer.name + ' - ' + item.buyer.taxIdentificationNumber}}</td>
+            <td><button id="details" class="btn btn-primary" (click)="goToDetails(item.id)">Details</button></td>
+            <td><button id="delete" class="btn btn-danger" (click)="delete(item.id)">Delete</button></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<button class="btn btn-primary" (click) = "goToCreate()">Create invoice</button>

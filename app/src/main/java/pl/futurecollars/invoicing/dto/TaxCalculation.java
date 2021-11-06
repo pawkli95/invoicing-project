@@ -6,11 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@CrossOrigin
 public class TaxCalculation {
 
     @ApiModelProperty(value = "Total income of company", required = true, example = "3000")

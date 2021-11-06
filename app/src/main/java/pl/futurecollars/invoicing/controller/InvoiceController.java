@@ -2,6 +2,8 @@ package pl.futurecollars.invoicing.controller;
 
 import io.swagger.annotations.Api;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,7 @@ import pl.futurecollars.invoicing.dto.InvoiceDto;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.service.InvoiceService;
 
+@CrossOrigin
 @Api(tags = {"invoice-controller"})
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +38,7 @@ public class InvoiceController implements InvoiceControllerInterface {
     @Override
     public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) {
         log.debug("Request to save invoice");
+        invoice.setDate(LocalDate.now());
         return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.saveInvoice(invoice));
     }
 
@@ -50,10 +55,10 @@ public class InvoiceController implements InvoiceControllerInterface {
             invoicePredicate = Objects::nonNull;
         }
         if (before != null) {
-            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().toLocalDate().isBefore(before));
+            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().isBefore(before));
         }
         if (after != null) {
-            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().toLocalDate().isAfter(after));
+            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().isAfter(after));
         }
         if (sellerTaxId != null) {
             invoicePredicate = invoicePredicate.and(invoice -> invoice.getSeller().getTaxIdentificationNumber().equals(sellerTaxId));

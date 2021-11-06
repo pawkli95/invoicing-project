@@ -5,8 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.TaxCalculation;
@@ -17,12 +18,13 @@ import pl.futurecollars.invoicing.service.TaxCalculatorService;
 @RestController
 @RequestMapping("/api/tax")
 @AllArgsConstructor
+@CrossOrigin
 public class TaxCalculatorController {
 
     private final TaxCalculatorService taxCalculatorService;
 
     @ApiOperation(value = "Get tax calculation")
-    @PostMapping("/{taxId}")
+    @GetMapping("/{taxId}")
     public ResponseEntity<TaxCalculation> getTaxCalculation(@PathVariable String taxId) {
         log.debug("Getting tax calculation");
         return ResponseEntity.ok().body(taxCalculatorService.getTaxCalculation(taxId));

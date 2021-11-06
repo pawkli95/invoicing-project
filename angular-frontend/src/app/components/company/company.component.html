@@ -1,0 +1,45 @@
+<div class = "div1">
+<h1>Details of company {{item.name}}</h1>
+<form [formGroup]="formGroup" name = "form" id="form" class = "form-group" #companyForm>
+    <div class="div2">
+    <label for="taxIdentificationNumber">Tax identification number</label>
+    <input type="text" class = "form-control" id = "taxIdentificationNumber" name="taxIdentificationNumber" value="{{item.taxIdentificationNumber}}" formControlName="taxIdentificationNumber" readonly>
+    </div>
+    <div>
+    <label for = "name">Company name</label>
+    <input type="text" class = "form-control" id= "name" name = "name" value = "{{item.name}}" formControlName="name">
+    <small class="text-danger" *ngIf="name.errors?.['required'] && (name.dirty || name.touched)" >
+        Company name is required
+    </small>
+    </div>
+    <div class="div2">
+    <label for="address">Address</label><br>
+    <input type="text" class = "form-control" id="address" name = "address" value = "{{item.address}}" formControlName="address">
+    <small  class="text-danger" *ngIf="address.errors?.['required'] && (address.dirty || address.touched)">
+        Address is required
+    </small>
+    </div>
+    <div class="div2">
+    <label for="healthInsurance">Health insurance</label>
+    <input type="text" class = "form-control" id="healthInsurance" name="healthInsurance" value = "{{item.healthInsurance}}" formControlName = "healthInsurance">
+    <small  class="text-danger" *ngIf="health.errors?.['required'] && (health.dirty || health.touched)">
+        Health insurance is required
+    </small>
+    <small  class="text-danger" *ngIf="health.errors?.['pattern'] && (health.dirty || health.touched)">
+         Only numbers allowed
+    </small>
+    </div>
+    <div class="div2">
+    <label for = "pensionInsurance">Pension insurance</label>
+    <input type="text" class = "form-control" id="pensionInsurance" name="pensionInsurance" value = "{{item.pensionInsurance}}" formControlName = "pensionInsurance">
+    <small class="text-danger" *ngIf="pension.errors?.['required'] && (pension.dirty || pension.touched)">
+        Pension insurance is required
+    </small> 
+    <small  class="text-danger" *ngIf="pension.errors?.['pattern'] && (pension.dirty || pension.touched)">
+        Only numbers allowed
+           </small>
+    </div>
+</form>
+</div>
+<button id="update" class = "btn btn-primary" (click) = "update()" [disabled] = "formGroup.invalid">Update company</button>
+<button class = "btn btn-info" (click) = "goBack()">Go back</button>

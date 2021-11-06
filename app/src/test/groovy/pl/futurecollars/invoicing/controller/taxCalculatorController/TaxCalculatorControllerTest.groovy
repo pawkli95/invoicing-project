@@ -17,7 +17,7 @@ import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.dto.TaxCalculation
 import spock.lang.Shared
 import spock.lang.Specification
-import java.time.LocalDateTime
+import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -126,8 +126,8 @@ class TaxCalculatorControllerTest extends Specification {
         CompanyDto company2 = CompanyFixture.getCompanyDto()
         company1 = addCompany(company1)
         company2 = addCompany(company2)
-        InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
-        InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+        InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
+        InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
         addInvoice(invoice1)
         addInvoice(invoice2)
     }
@@ -136,8 +136,8 @@ class TaxCalculatorControllerTest extends Specification {
         CompanyDto company2 = CompanyFixture.getCompanyDto()
         company1 = addCompany(company1)
         company2 = addCompany(company2)
-        InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
-        InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
+        InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
+        InvoiceDto invoice2 = new InvoiceDto(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
         addInvoice(invoice1)
         addInvoice(invoice2)
     }

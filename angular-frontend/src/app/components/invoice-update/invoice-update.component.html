@@ -1,0 +1,82 @@
+<div class="div1">
+    <h1>Update invoice</h1>
+        <form [formGroup] = "formGroup">
+            <div class="div2">
+            <label>Invoice number</label>
+                <input [class.is-invalid]="number.invalid && number.touched" class="form-control" formControlName="number">
+                <div *ngIf="number.invalid && (number.dirty || number.touched)"
+                class="text-danger">
+                   <small *ngIf="number.errors?.['required']">
+                Invoice number is required
+                   </small>
+                   <small *ngIf="number.errors?.['maxlength']">
+               Invoice number can be max 8 digits long
+                   </small>
+               </div>
+            </div>
+            <div class="div2"> 
+            <label>Seller</label>
+                <select [class.is-invalid]="seller.invalid && seller.touched" class="form-control" formControlName="seller">
+                    <option [ngValue]='seller.value' selected>{{seller.value.name + ' - ' + seller.value.taxIdentificationNumber}}</option>
+                    <option *ngFor="let company of companyList" [ngValue]="company">{{company.name + ' - ' + company.taxIdentificationNumber}}</option>
+                </select>
+                <small class="text-danger" *ngIf="seller.errors?.['required'] && (seller.dirty || seller.touched)">
+                    Please choose seller
+                </small>
+            </div>
+            <div class="div2"> 
+            <label>Buyer</label>
+                <select [class.is-invalid]="buyer.invalid && buyer.touched" class="form-control" formControlName="buyer">
+                    <option [ngValue]='buyer.value' selected>{{buyer.value.name + ' - ' + buyer.value.taxIdentificationNumber}}</option>
+                    <option *ngFor="let company of companyList" [ngValue]="company">{{company.name + ' - ' + company.taxIdentificationNumber}}</option>
+                </select>
+                <small class="text-danger" *ngIf="buyer.errors?.['required'] && (buyer.dirty || buyer.touched)">
+                    Please choose buyer
+                </small>
+            </div>    
+            <div formArrayName="invoiceEntries">
+                <h2>Invoice entries</h2>
+                <button class="btn btn-primary" (click)=addEntry()>Add entry</button>
+                <table class = "table table-striped">
+                    <thead>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Vat rate</th>
+                        <th>Car for personal use?</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let entry of entries.controls; let i = index" [formGroupName] = "i">
+                          <td>
+                            <input class="form-control" formControlName="description">
+                          </td>
+                          <td>
+                            <input class="form-control" formControlName="price"> 
+                          </td> 
+                          <td>
+                            <select class="form-control" formControlName="vatRate">
+                                <option [value]='' selected hidden disabled>Choose vat rate</option>
+                                <option [value] = "vat.vat_0">VAT_0</option>
+                                <option [value] = "vat.vat_5">VAT_5</option>
+                                <option [value] = "vat.vat_8">VAT_8</option>
+                                <option [value] = "vat.vat_23">VAT_23</option>
+                            </select>
+                          </td>
+                          <td>
+                            <select class="form-control" formControlName="personalCar">
+                                <option [value]="false">False</option>
+                                <option [value]="true">True</option>
+                            </select>
+                          </td>
+                          <td>
+                            <button class="btn btn-danger" (click)="deleteEntry(i)">Delete</button>
+                          </td> 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+</div>        
+<button id="updateButton" class = "btn btn-primary" (click) = "update()" [disabled] = "formGroup.invalid">Update invoice</button>
+<button id="b" class = "btn btn-info" (click) = "goBack()">Go back</button>
+
