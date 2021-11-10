@@ -35,8 +35,8 @@ class InvoiceControllerStepwiseTest extends Specification {
     @Autowired
     JacksonTester<List<InvoiceDto>> jsonInvoiceListService
 
-    @Shared InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto()
-    @Shared InvoiceDto updatedInvoiceDto = InvoiceFixture.getInvoiceDto()
+    @Shared InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
+    @Shared InvoiceDto updatedInvoiceDto = InvoiceFixture.getInvoiceDto(1)
 
     def setupSpec() {
         invoiceDto.setInvoiceEntries(List.of(InvoiceEntryFixture.getInvoiceEntry(1)))
@@ -196,7 +196,7 @@ class InvoiceControllerStepwiseTest extends Specification {
 
     def "should return 404 Not Found when trying to update nonexistent invoice"() {
         given:
-        InvoiceDto invalidInvoiceDto = InvoiceFixture.getInvoiceDto()
+        InvoiceDto invalidInvoiceDto = InvoiceFixture.getInvoiceDto(1)
         String jsonString = jsonInvoiceService.write(invalidInvoiceDto).getJson()
 
         when:
@@ -252,11 +252,5 @@ class InvoiceControllerStepwiseTest extends Specification {
             UUID id = invoice.getId()
             deleteInvoice(id)
         }
-    }
-
-    static void sortInvoiceEntries(InvoiceDto invoiceDto1, InvoiceDto invoiceDto2) {
-        Comparator<InvoiceEntry> comparator = (o1, o2) -> { o1.getId().compareTo(o2.getId()) }
-        invoiceDto1.getInvoiceEntries().sort(comparator)
-        invoiceDto2.getInvoiceEntries().sort(comparator)
     }
 }

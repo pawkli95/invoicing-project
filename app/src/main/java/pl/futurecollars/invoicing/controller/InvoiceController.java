@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,7 +32,7 @@ public class InvoiceController implements InvoiceControllerInterface {
     private final InvoiceService invoiceService;
 
     @Override
-    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody InvoiceDto invoice) {
+    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) {
         log.debug("Request to save invoice");
         return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.saveInvoice(invoice));
     }
@@ -74,7 +75,7 @@ public class InvoiceController implements InvoiceControllerInterface {
     }
 
     @Override
-    public ResponseEntity<InvoiceDto> update(@RequestBody InvoiceDto updatedInvoice) throws NoSuchElementException {
+    public ResponseEntity<InvoiceDto> update(@RequestBody @Valid InvoiceDto updatedInvoice) throws NoSuchElementException {
         log.debug("Request to update invoice");
         return ResponseEntity.ok().body(invoiceService.updateInvoice(updatedInvoice));
     }

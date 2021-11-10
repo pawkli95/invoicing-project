@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.futurecollars.invoicing.db.Database
+import pl.futurecollars.invoicing.model.Invoice
 
 
 @SpringBootTest
@@ -11,7 +12,7 @@ import pl.futurecollars.invoicing.db.Database
 class InvoiceServiceJpaTest extends InvoiceServiceAbstractIntegrationTest {
 
     @Autowired
-    Database jpaDatabase
+    Database<Invoice> jpaDatabase
 
     @Override
     Database getDatabase() {

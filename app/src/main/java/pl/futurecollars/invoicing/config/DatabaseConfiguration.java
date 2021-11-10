@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.db.companies.CompanyDatabase;
 import pl.futurecollars.invoicing.db.companies.CompanyRepository;
+import pl.futurecollars.invoicing.db.invoices.InvoiceDatabase;
 import pl.futurecollars.invoicing.db.invoices.InvoiceRepository;
-import pl.futurecollars.invoicing.db.invoices.JpaDatabase;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 
@@ -21,7 +21,7 @@ public class DatabaseConfiguration {
     @Bean
     @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
     public Database<Invoice> getJpaDatabase(InvoiceRepository invoiceRepository) {
-        return new JpaDatabase(invoiceRepository);
+        return new InvoiceDatabase(invoiceRepository);
     }
 
     @Bean

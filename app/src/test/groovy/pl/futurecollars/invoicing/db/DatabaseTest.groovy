@@ -1,26 +1,23 @@
 package pl.futurecollars.invoicing.db
 
-import lombok.extern.slf4j.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Invoice
-import spock.lang.Shared
 import spock.lang.Specification
 
-@Slf4j
-abstract class DatabaseTest extends Specification {
+@SpringBootTest
+@ActiveProfiles("jpaTest")
+class InvoiceDatabaseTest extends Specification {
 
-
+    @Autowired
     Database<Invoice> database
 
-    Invoice invoice = InvoiceFixture.getInvoice()
-
-    abstract Database getDatabase();
+    Invoice invoice = InvoiceFixture.getInvoice(1)
 
     def setup() {
-        database = getDatabase()
-    }
-
-    def cleanup() {
         clearDatabase()
     }
 
@@ -82,7 +79,7 @@ abstract class DatabaseTest extends Specification {
         Invoice returnedInvoice = database.save(invoice)
 
         and: "updated invoice"
-        Invoice updatedInvoice = InvoiceFixture.getInvoice()
+        Invoice updatedInvoice = InvoiceFixture.getInvoice(1)
         updatedInvoice.setId(returnedInvoice.getId())
 
         when: "we ask database to update invoice"
@@ -98,7 +95,7 @@ abstract class DatabaseTest extends Specification {
 
     def "should throw exception when updating nonexistent invoice"() {
         given:
-        Invoice invoice = InvoiceFixture.getInvoice()
+        Invoice invoice = InvoiceFixture.getInvoice(1)
 
         when:
         database.update(invoice)
