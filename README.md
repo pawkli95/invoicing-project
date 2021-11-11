@@ -12,8 +12,5 @@ Application used to manage invoices, where you can add, edit or delete companies
 ![](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
 
-## Demo
-![Demo1](demo1_SparkVideo.gif)
-![Demo2](demo2_SparkVideo.gif)
-![Demo3](demo3_SparkVideo.gif)
+
 
