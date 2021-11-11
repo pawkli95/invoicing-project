@@ -1,5 +1,5 @@
 invoicing-system:
-  database: jpa
+  database: dev
 spring:
   jpa:
     database: h2

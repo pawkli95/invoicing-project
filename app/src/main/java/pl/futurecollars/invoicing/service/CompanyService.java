@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.dto.CompanyDto;
 import pl.futurecollars.invoicing.dto.mappers.CompanyMapper;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Company;
 
 @Service
@@ -30,7 +31,7 @@ public class CompanyService {
         return companyMapper.toDto(company);
     }
 
-    public void delete(UUID id) throws NoSuchElementException {
+    public void delete(UUID id) throws NoSuchElementException, ConstraintException {
         companyDatabase.delete(id);
     }
 

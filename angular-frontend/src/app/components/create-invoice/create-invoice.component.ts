@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { CompanyDto } from 'src/app/dto/company-dto';
-import { InvoiceDto } from 'src/app/dto/invoice-dto';
-import { InvoiceEntry } from 'src/app/dto/invoice-entries';
 import { CompanyService } from 'src/app/services/company.service';
 import { InvoiceService } from 'src/app/services/invoice.service';
 
@@ -14,7 +13,7 @@ import { InvoiceService } from 'src/app/services/invoice.service';
 })
 export class CreateInvoiceComponent implements OnInit {
 
-  constructor(private invoiceService: InvoiceService, private router: Router, private companyService: CompanyService) { }
+  constructor(private invoiceService: InvoiceService, private router: Router, private companyService: CompanyService,  private toastr: ToastrService) { }
 
   
 companyList: Array<CompanyDto> = []
@@ -62,7 +61,7 @@ vat = {
 
   addEntry() {
     const entry = new FormGroup({
-      description: new FormControl('', [Validators.required]),
+      description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
       price: new FormControl('', [Validators.required, Validators.pattern("^[0-9]+(.[0-9]{0,2})?$")]),
       vatRate: new FormControl('', [Validators.required]),
       personalCar: new FormControl('', [Validators.required])
@@ -79,16 +78,20 @@ vat = {
   save() {
     this.invoiceService.saveInvoice({
       ...this.formGroup.value
-    }).subscribe()
-    this.goBack()
+    }).subscribe(() => {
+      this.toastr.success('Created succesfully')
+    },
+    err => {
+      this.toastr.error(err.error.message)
+    },
+    () => {
+      this.goBack()
+    })
 
   }
 
   goBack() {
     this.router.navigate(['invoices'])
   }
-
-
-
 }
 

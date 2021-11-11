@@ -10,7 +10,7 @@ import spock.lang.Subject
 
 @ActiveProfiles("testcontainer")
 @SpringBootTest
-class InvoiceServiceJpaPostgresTest extends InvoiceServiceAbstractIntegrationTest{
+class InvoiceServiceJpaPostgresTest extends InvoiceServiceIntegrationTest{
 
     @Subject.Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")

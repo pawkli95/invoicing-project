@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyDto } from 'src/app/dto/company-dto';
 import { CompanyService } from 'src/app/services/company.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-create-company',
@@ -11,12 +13,12 @@ import { CompanyService } from 'src/app/services/company.service';
 })
 export class CreateCompanyComponent implements OnInit {
 
-  constructor(private companyService: CompanyService, private router: Router) { }
+  constructor(private companyService: CompanyService, private router: Router, private toastr: ToastrService) { }
 
   formGroup: FormGroup = new FormGroup({
     taxIdentificationNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]),
-    name: new FormControl('', [Validators.required]),
-    address: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+    address: new FormControl('', [Validators.required, Validators.maxLength(200)]),
     pensionInsurance: new FormControl('', [Validators.required, Validators.pattern("^[0-9]+(.[0-9]{0,2})?$")]),
     healthInsurance: new FormControl('', [Validators.required, Validators.pattern("^[0-9]+(.[0-9]{0,2})?$")])
   })
@@ -27,8 +29,14 @@ export class CreateCompanyComponent implements OnInit {
   save(): void {
     this.companyService.saveCompany({
       ...this.formGroup.value
-    }).subscribe()
-    this.goBack()
+    }).subscribe(() => {
+      this.toastr.success("Created successfully")
+    },
+    err => {
+      this.toastr.error(err.error.message);
+    }, () => {
+      this.goBack()
+    })
   }
   
   goBack(): void {

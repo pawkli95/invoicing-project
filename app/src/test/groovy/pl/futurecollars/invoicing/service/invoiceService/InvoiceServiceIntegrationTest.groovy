@@ -11,7 +11,7 @@ import pl.futurecollars.invoicing.service.InvoiceService
 import spock.lang.Specification
 import java.util.function.Predicate
 
-abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
+abstract class InvoiceServiceIntegrationTest extends Specification {
 
     Database<Invoice> database
 

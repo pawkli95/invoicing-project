@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class TaxCalculatorControllerTest extends Specification {
 
     @Autowired

@@ -8,8 +8,8 @@ import pl.futurecollars.invoicing.model.Invoice
 
 
 @SpringBootTest
-@ActiveProfiles("jpaTest")
-class InvoiceServiceJpaTest extends InvoiceServiceAbstractIntegrationTest {
+@ActiveProfiles("test")
+class InvoiceServiceJpaTest extends InvoiceServiceIntegrationTest {
 
     @Autowired
     Database<Invoice> jpaDatabase

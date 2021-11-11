@@ -5,23 +5,35 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Tax id</th>
+            <th>Tax identification number</th>
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor = "let item of list | company: searchText">
             <td>{{item.name}}</td>
             <td>{{item.taxIdentificationNumber}}</td>
-            <td><button class = "btn btn-primary" (click) = "goToCompanyDetails(item.id)">Details</button></td>
-            <td><button class = "btn btn-info" (click)="goToInvoices(item.taxIdentificationNumber)">Invoices</button></td>
-            <td><button class = "btn btn-info" (click) = "goToTaxReport(item.taxIdentificationNumber)">Generate tax report</button></td>
-            <td>
-                <button *ngIf="!checkIfCompanyHaveInvoices(item.id)" id="delete" class = "btn btn-danger" (click) = "delete(item.id)">Delete</button>
-                <small *ngIf="checkIfCompanyHaveInvoices(item.id)" class="text-danger">To delete company, delete related invoices first</small>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><button class = "btn btn-primary" (click) = "goToCompanyDetails(item.id)" title="Details/edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text-fill" viewBox="0 0 16 16">
+                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
+              </svg>
+                </button>
+                <button class="btn btn-success" (click) = goToTaxReport(item.taxIdentificationNumber) title="Generate tax report">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet-fill" viewBox="0 0 16 16">
+                        <path d="M12 0H4a2 2 0 0 0-2 2v4h12V2a2 2 0 0 0-2-2zm2 7h-4v2h4V7zm0 3h-4v2h4v-2zm0 3h-4v3h2a2 2 0 0 0 2-2v-1zm-5 3v-3H6v3h3zm-4 0v-3H2v1a2 2 0 0 0 2 2h1zm-3-4h3v-2H2v2zm0-3h3V7H2v2zm4 0V7h3v2H6zm0 1h3v2H6v-2z"/>
+                      </svg>
+                </button>
+                <button id="delete" class = "btn btn-danger" (click) = "delete(item.id)" title="Delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                      </svg>
+                </button>
             </td>
         </tr>
     </tbody>
