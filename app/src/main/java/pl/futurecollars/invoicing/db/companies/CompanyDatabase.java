@@ -22,7 +22,6 @@ public class CompanyDatabase implements Database<Company> {
         try {
             return companyRepository.save(company);
         } catch (DataIntegrityViolationException e) {
-            log.info("Catch catch");
             throw new ConstraintException("This tax id is already in use");
         }
     }
