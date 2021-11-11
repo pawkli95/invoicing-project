@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Constants;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
 import pl.futurecollars.invoicing.service.InvoiceService;
@@ -35,7 +37,7 @@ public class InvoiceController implements InvoiceControllerInterface {
     private final InvoiceService invoiceService;
 
     @Override
-    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) {
+    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) throws ConstraintException {
         log.debug("Request to save invoice");
         invoice.setDate(LocalDate.now());
         invoice.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
@@ -87,7 +89,7 @@ public class InvoiceController implements InvoiceControllerInterface {
     }
 
     @Override
-    public ResponseEntity<Void> delete(@PathVariable UUID id) throws NoSuchElementException {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) throws NoSuchElementException, ConstraintException {
         log.debug("Request to delete invoice with id: " + id.toString());
         invoiceService.deleteInvoice(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

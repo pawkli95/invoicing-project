@@ -19,6 +19,7 @@ import {MatInputModule} from '@angular/material/input';
 import { CompanyPipe } from './pipes/company.pipe';
 import { CompanyInvoiceListComponent } from './components/company-invoice-list/company-invoice-list.component';
 import { InvoicePipe } from './pipes/invoice.pipe';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { InvoicePipe } from './pipes/invoice.pipe';
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatInputModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

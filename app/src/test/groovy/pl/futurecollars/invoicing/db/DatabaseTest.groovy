@@ -9,7 +9,7 @@ import pl.futurecollars.invoicing.model.Invoice
 import spock.lang.Specification
 
 @SpringBootTest
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class InvoiceDatabaseTest extends Specification {
 
     @Autowired

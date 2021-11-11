@@ -41,5 +41,6 @@
     </div>
 </form>
 </div>
-<button id="update" class = "btn btn-primary" (click) = "update()" [disabled] = "formGroup.invalid">Update company</button>
-<button class = "btn btn-info" (click) = "goBack()">Go back</button>
+<button id="update" class = "btn btn-primary" (click) = "update()" [disabled] = "formGroup.invalid" title="Update company">Update company</button>
+<button class = "btn btn-info" (click) = "goToInvoices(item.taxIdentificationNumber)" title="Invoices">Invoices</button>
+<button class = "btn btn-info" (click) = "goBack()" title="Go back">Go back</button>

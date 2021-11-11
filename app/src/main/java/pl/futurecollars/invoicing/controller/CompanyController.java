@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.CompanyDto;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.service.CompanyService;
 
 @CrossOrigin
@@ -31,7 +32,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Add new company")
     @PostMapping
-    public ResponseEntity<CompanyDto> save(@RequestBody @Valid CompanyDto companyDto) {
+    public ResponseEntity<CompanyDto> save(@RequestBody @Valid CompanyDto companyDto) throws ConstraintException {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.saveCompany(companyDto));
     }
 
@@ -55,7 +56,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Delete company by id")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) throws ConstraintException {
         companyService.delete(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

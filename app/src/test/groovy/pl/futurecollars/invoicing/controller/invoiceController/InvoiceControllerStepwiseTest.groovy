@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @Stepwise
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class InvoiceControllerStepwiseTest extends Specification {
 
     @Autowired

@@ -15,7 +15,7 @@ import spock.lang.Specification
 import java.time.LocalDate;
 
 @SpringBootTest
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class TaxCalculatorServiceIntegrationTest extends Specification {
 
     @Autowired

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Invoice;
 
 @RequiredArgsConstructor

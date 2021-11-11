@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from 'src/app/services/company.service';
 import { CompanyDto } from 'src/app/dto/company-dto';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-company',
@@ -11,7 +12,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class CompanyComponent implements OnInit {
 
-  constructor(private activatedRoute: ActivatedRoute, private companyService: CompanyService, private router: Router) { 
+  constructor(private activatedRoute: ActivatedRoute, private companyService: CompanyService, private router: Router,
+     private toastr: ToastrService) { 
     this.id = this.activatedRoute.snapshot.paramMap.get('id')
   }
 
@@ -50,13 +52,23 @@ export class CompanyComponent implements OnInit {
     this.companyService.updateCompany({
       ...this.formGroup.value,
       id: this.item.id
-    }).subscribe()
-    this.router.navigate(['companies'])
+    }).subscribe(() => {
+      this.toastr.success("Updated succesfully")
+    }, error => {
+      console.log(error)
+    }, () => {
+      this.goBack()
+    })
+    
 
   }
 
   public goBack(): void {
     this.router.navigate(['companies'])
+  }
+
+  public goToInvoices(taxId: string) {
+    this.router.navigate(['companies', 'invoices', taxId])
   }
 
   get name() {

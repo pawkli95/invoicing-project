@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { CompanyDto } from 'src/app/dto/company-dto';
 import { InvoiceDto } from 'src/app/dto/invoice-dto';
 import { CompanyService } from 'src/app/services/company.service';
@@ -12,7 +13,8 @@ import { InvoiceService } from 'src/app/services/invoice.service';
 })
 export class CompanyListComponent implements OnInit {
 
-  constructor(private companyService: CompanyService, private router: Router, private invoiceService: InvoiceService) { }
+  constructor(private companyService: CompanyService, private router: Router, private invoiceService: InvoiceService,
+      private toastr: ToastrService) { }
 
   list: Array<CompanyDto> = []
 
@@ -36,6 +38,9 @@ export class CompanyListComponent implements OnInit {
   public delete(id: string): void {
     this.companyService.deleteCompany(id).subscribe(() => {
       this.fetchData()
+    }, err => {
+      console.log(err.error)
+      this.toastr.error(err.error.message)
     })
   }
 
@@ -47,28 +52,12 @@ export class CompanyListComponent implements OnInit {
     this.router.navigate(['companies', 'new'])
   }
 
-  public goToInvoices(taxId: string) {
-    this.router.navigate(['companies', 'invoices', taxId])
-  }
-
   public fetchData(): void {
     this.companyService.getCompaniesList().subscribe(data => {
       this.list = data;
     }, error => {
       console.log(error)
     });
-  }
-
-  public checkIfCompanyHaveInvoices(id: string): boolean {
-    for(let invoice of this.invoices) {
-      if(invoice.seller.id === id) {
-        return true
-      }
-      if(invoice.buyer.id === id) {
-        return true
-      }
-    }
-    return false
   }
 }
 
