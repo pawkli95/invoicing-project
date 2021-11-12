@@ -15,7 +15,7 @@ export class CreateInvoiceComponent implements OnInit {
 
   constructor(private invoiceService: InvoiceService, private router: Router, private companyService: CompanyService,  private toastr: ToastrService) { }
 
-  
+
 companyList: Array<CompanyDto> = []
 
 vat = {
@@ -30,7 +30,7 @@ vat = {
     this.companyService.getCompaniesList().subscribe(data => {
       console.log(data)
       this.companyList = data;
-  
+
     }, error => {
       console.log(error);
     })
@@ -79,7 +79,7 @@ vat = {
     this.invoiceService.saveInvoice({
       ...this.formGroup.value
     }).subscribe(() => {
-      this.toastr.success('Created succesfully')
+      this.toastr.success('Created successfully')
     },
     err => {
       this.toastr.error(err.error.message)

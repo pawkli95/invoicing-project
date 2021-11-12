@@ -31,14 +31,14 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     Company company1 = CompanyFixture.getCompany()
 
     def "should calculate tax without personal car expenses"() {
-        given:
+        given: "database with invoices without personal car entries"
         clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
-        when:
+        when: "we ask taxCalculatorService to calculate taxes"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "returned taxCalculation is accurate"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
         taxCalculation.getCosts() == BigDecimal.valueOf(2000)
         taxCalculation.getIncomeMinusCosts() == BigDecimal.valueOf(2200)
@@ -56,14 +56,14 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     def "should calculate tax with personal car expenses"() {
-        given:
+        given: "database with invoices with personal car entries"
         clearDatabase()
         addInvoicesWithPersonalCarEntries()
 
-        when:
+        when: "we ask taxCalculatorService to calculate taxes"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "returned taxCalculation is accurate"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
         taxCalculation.getCosts() == BigDecimal.valueOf(2138)
         taxCalculation.getIncomeMinusCosts() == BigDecimal.valueOf(2062)
@@ -81,13 +81,13 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     def "should throw NoSuchElementException when tax id is not in database"() {
-        given:
+        given: "an empty database"
         clearDatabase()
 
-        when:
+        when:"we ask taxCalculatorService to calculate taxes"
         taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "NoSuchElementException is thrown"
         thrown(NoSuchElementException)
     }
 

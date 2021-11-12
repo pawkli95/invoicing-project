@@ -22,85 +22,85 @@ class CompanyDatabaseTest extends Specification {
     Company company = CompanyFixture.getCompany()
 
     def "should save company to database"() {
-        when:
+        when: "we ask companyDatabase to save company"
         Company returnedCompany = companyDatabase.save(company)
 
-        then:
+        then: "company is saved in database"
         companyDatabase.getById(returnedCompany.getId()) == company
 
     }
 
     def "should get company by id"() {
-        given:
+        given: "company saved in database"
         Company returnedCompany = companyDatabase.save(company)
 
-        when:
+        when: "we ask companyDatabase to return company by id"
         Company response = companyDatabase.getById(returnedCompany.getId())
 
-        then:
+        then: "company is returned"
         returnedCompany == response
     }
 
     def "should throw NoSuchElementException when id doesn't exist"() {
-        given:
+        given: "random UUID"
         UUID invalidId = UUID.randomUUID()
 
-        when:
+        when: "we ask companyDatabase to return company by id"
         companyDatabase.getById(invalidId)
 
-        then:
+        then: "NoSuchElementException is thrown"
         thrown(NoSuchElementException)
     }
 
     def "should get a list of companies"() {
-        given:
+        given: "5 companies saved to database"
         def addedCompanies = addCompanies(5)
 
-        when:
+        when: "we ask companyDatabase to return a list of all companies"
         def response = companyDatabase.getAll()
 
-        then:
+        then: "list of companies is returned"
         response == addedCompanies
     }
 
     def "should get empty list when no companies exist in database"() {
-        when:
+        when: "we ask companyDatabase to return a list of all companies"
         def response = companyDatabase.getAll()
 
-        then:
+        then: "empty list is returned"
         response.isEmpty()
     }
 
     def "should update company"() {
-        given:
+        given: "an updated company"
         Company companyToUpdate = companyDatabase.save(company)
         Company updatedCompany = CompanyFixture.getCompany()
         updatedCompany.setId(companyToUpdate.getId())
 
-        when:
+        when: "we ask companyDatabase to update company"
         companyDatabase.update(updatedCompany)
 
-        then:
+        then: "company is updated"
         companyDatabase.getById(companyToUpdate.getId()) == updatedCompany
     }
 
     def "should throw NoSuchElementException when updating nonexistent invoice"() {
-        when:
+        when: "we ask companyDatabase to update company"
         company.setId(UUID.randomUUID())
         companyDatabase.update(company)
 
-        then:
+        then: "NoSuchElementException is thrown"
         thrown(NoSuchElementException)
     }
 
     def "should delete company"() {
-        given:
+        given: "database with 1 company"
         Company returnedCompany = companyDatabase.save(company)
 
-        when:
+        when: "we ask companyDatabase to delete company by id"
         companyDatabase.delete(returnedCompany.getId())
 
-        then:
+        then: "database is empty"
         companyDatabase.getAll().isEmpty()
     }
 

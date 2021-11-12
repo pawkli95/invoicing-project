@@ -19,6 +19,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./angular-frontend
+    ports:
+      - "4200:80"
 
 
   app:
@@ -26,6 +28,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    ports:
+    - "8080:8080"
 
 volumes:
   postgres:

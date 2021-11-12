@@ -24,53 +24,53 @@ class CompanyServiceUnitTest extends Specification {
     }
 
     def "calling saveCompany() should map dto to entity and delegate to database save()"() {
-        when:
+        when: "we ask companyService to save company"
         companyService.saveCompany(companyDto)
 
-        then:
+        then: "companyDatabase method save() is called"
         1 * companyDatabase.save(companyMapper.toEntity(companyDto))
     }
 
     def "should return list of companyDto"() {
-        given:
+        given: "a list of companies returned by database"
         companyDatabase.getAll() >> List.of(companyMapper.toEntity(companyDto))
 
-        when:
+        when: "we ask companyService to return a list of companies"
         def list = companyService.getAll()
 
-        then:
+        then: "list of companies is returned"
         list == [companyDto]
     }
 
     def "calling getById() should map entity to dto and return it"() {
-        given:
+        given:"a company returned by database"
         UUID id = UUID.randomUUID()
         companyDto.setId(id)
         companyDatabase.getById(id) >> companyMapper.toEntity(companyDto)
 
-        when:
+        when:"we ask companyService to get company by id"
         def response = companyService.getById(id)
 
-        then:
+        then: "company mapped to dto is returned"
         response == companyDto
     }
 
     def "calling update() should map dto to entity and call database update()"() {
-        when:
+        when:"we ask companyService to update company"
         companyService.update(companyDto)
 
-        then:
+        then:"database update() method is called"
         1 * companyDatabase.update(companyMapper.toEntity(companyDto))
     }
 
     def "calling delete() should call database delete()"() {
-        given:
+        given: "random UUID"
         UUID id = UUID.randomUUID()
 
-        when:
+        when: "we ask companyService to delete company by id"
         companyService.delete(id)
 
-        then:
+        then: "database delete() method is called"
         1 * companyDatabase.delete(id)
     }
 }
