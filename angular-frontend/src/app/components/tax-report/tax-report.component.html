@@ -1,0 +1,55 @@
+<div class = "d1"><h1>Tax report {{taxId}}</h1>
+    <div class = "group">
+        <label for = "income">Income</label>
+         <input type="text" class = "form-control" id= "income" name = "income" value = "{{taxReport.income}}" readonly>
+    </div>
+    <div class = "group">
+        <label for="costs">Costs</label>
+        <input type="text" class = "form-control" id="costs" name = "costs" value = "{{taxReport.costs}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "income-costs">Income minus costs</label>
+        <input type="text" class = "form-control" id= "income-costs" name = "income-costs" value = "{{taxReport.incomeMinusCosts}}" readonly>
+    </div>
+    <div class = "group">
+        <label for="pension">Pension insurance</label>
+        <input type="text" class = "form-control" id="pension" name = "pension" value = "{{taxReport.pensionInsurance}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "i-c-p">Income minus costs minus pension insurance</label>
+        <input type="text" class = "form-control" id= "i-c-p" name = "i-c-p" value = "{{taxReport.incomeMinusCostsMinusPensionInsurance}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "taxbase">Tax calculation base</label>
+        <input type="text" class = "form-control" id= "taxbase" name = "taxbase" value = "{{taxReport.taxCalculationBase}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "incometax">Income tax</label>
+        <input type="text" class = "form-control" id= "incometax" name = "incometax" value = "{{taxReport.incomeTax}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "h775">Health insurance(7,75%)</label>
+        <input type="text" class = "form-control" id= "h775" name = "h775" value = "{{taxReport.healthInsurance775}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "i-h">Income tax minus health insurance</label>
+        <input type="text" class = "form-control" id= "i-h" name = "i-h" value = "{{taxReport.incomeTaxMinusHealthInsurance}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "finaltax">Final income tax value</label>
+        <input type="text" class = "form-control" id= "finaltax" name = "finaltax" value = "{{taxReport.finalIncomeTaxValue}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "incomingVat">Incoming Vat</label>
+        <input type="text" class = "form-control" id= "incomingVat" name = "incomingVat" value = "{{taxReport.incomingVat}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "outgoingVat">Outgoing Vat</label>
+        <input type="text" class = "form-control" id= "outgoingVat" name = "outgoingVat" value = "{{taxReport.outgoingVat}}" readonly>
+    </div>
+    <div class = "group">
+        <label for = "vatToReturn">Vat to return</label>
+        <input type="text" class = "form-control" id= "vatToReturn" name = "vatToReturn" value = "{{taxReport.vatToReturn}}" readonly>
+    </div>
+</div>
+<button class="btn btn-primary" (click) = "goBack()">Go back</button>

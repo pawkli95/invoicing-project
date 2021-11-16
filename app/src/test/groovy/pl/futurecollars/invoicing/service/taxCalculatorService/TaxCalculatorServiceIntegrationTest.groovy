@@ -12,10 +12,10 @@ import pl.futurecollars.invoicing.dto.TaxCalculation
 import pl.futurecollars.invoicing.service.TaxCalculatorService
 import spock.lang.Shared
 import spock.lang.Specification
-import java.time.LocalDateTime
+import java.time.LocalDate;
 
 @SpringBootTest
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class TaxCalculatorServiceIntegrationTest extends Specification {
 
     @Autowired
@@ -31,14 +31,14 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     Company company1 = CompanyFixture.getCompany()
 
     def "should calculate tax without personal car expenses"() {
-        given:
+        given: "database with invoices without personal car entries"
         clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
-        when:
+        when: "we ask taxCalculatorService to calculate taxes"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "returned taxCalculation is accurate"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
         taxCalculation.getCosts() == BigDecimal.valueOf(2000)
         taxCalculation.getIncomeMinusCosts() == BigDecimal.valueOf(2200)
@@ -56,14 +56,14 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     def "should calculate tax with personal car expenses"() {
-        given:
+        given: "database with invoices with personal car entries"
         clearDatabase()
         addInvoicesWithPersonalCarEntries()
 
-        when:
+        when: "we ask taxCalculatorService to calculate taxes"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "returned taxCalculation is accurate"
         taxCalculation.getIncome() == BigDecimal.valueOf(4200)
         taxCalculation.getCosts() == BigDecimal.valueOf(2138)
         taxCalculation.getIncomeMinusCosts() == BigDecimal.valueOf(2062)
@@ -81,13 +81,13 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     def "should throw NoSuchElementException when tax id is not in database"() {
-        given:
+        given: "an empty database"
         clearDatabase()
 
-        when:
+        when:"we ask taxCalculatorService to calculate taxes"
         taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
-        then:
+        then: "NoSuchElementException is thrown"
         thrown(NoSuchElementException)
     }
 
@@ -95,8 +95,8 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Company c1 = companyDatabase.save(company1)
         Company c2 = companyDatabase.save(company2)
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
         invoiceDatabase.save(invoice1)
         invoiceDatabase.save(invoice2)
     }
@@ -105,8 +105,8 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Company c1 = companyDatabase.save(company1)
         Company c2 = companyDatabase.save(company2)
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
         invoiceDatabase.save(invoice1)
         invoiceDatabase.save(invoice2)
     }

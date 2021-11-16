@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @Stepwise
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class InvoiceControllerStepwiseTest extends Specification {
 
     @Autowired
@@ -38,10 +38,6 @@ class InvoiceControllerStepwiseTest extends Specification {
     @Shared InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
     @Shared InvoiceDto updatedInvoiceDto = InvoiceFixture.getInvoiceDto(1)
 
-    def setupSpec() {
-        invoiceDto.setInvoiceEntries(List.of(InvoiceEntryFixture.getInvoiceEntry(1)))
-        updatedInvoiceDto.setInvoiceEntries(List.of(InvoiceEntryFixture.getInvoiceEntry(1)))
-    }
 
     def "should return empty list"() {
         given:

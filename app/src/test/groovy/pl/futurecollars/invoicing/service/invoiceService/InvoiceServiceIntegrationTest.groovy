@@ -1,6 +1,9 @@
 package pl.futurecollars.invoicing.service.invoiceService
 
 import org.mapstruct.factory.Mappers
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
@@ -11,21 +14,21 @@ import pl.futurecollars.invoicing.service.InvoiceService
 import spock.lang.Specification
 import java.util.function.Predicate
 
-abstract class InvoiceServiceAbstractIntegrationTest extends Specification {
+@ActiveProfiles("test")
+@SpringBootTest
+class InvoiceServiceIntegrationTest extends Specification {
 
+    @Autowired
     Database<Invoice> database
 
+    @Autowired
     InvoiceService invoiceService
 
     InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
 
     InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
 
-    abstract Database getDatabase();
-
     def setup() {
-        database = getDatabase()
-        invoiceService = new InvoiceService(database, invoiceMapper)
         clearDatabase()
     }
 

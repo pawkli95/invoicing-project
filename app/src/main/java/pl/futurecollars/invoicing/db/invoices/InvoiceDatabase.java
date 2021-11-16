@@ -6,7 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import pl.futurecollars.invoicing.db.Database;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Invoice;
 
 @Getter
@@ -17,7 +19,11 @@ public class InvoiceDatabase implements Database<Invoice> {
 
     @Override
     public Invoice save(Invoice invoice) {
-        return invoiceRepository.save(invoice);
+        try {
+            return invoiceRepository.save(invoice);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintException("This invoice number is already in use");
+        }
     }
 
     @Override

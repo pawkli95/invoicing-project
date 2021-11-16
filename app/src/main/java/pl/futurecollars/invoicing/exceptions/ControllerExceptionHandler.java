@@ -17,9 +17,9 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<String> nullPointerExceptionHandler(NullPointerException e) {
+    @ExceptionHandler(ConstraintException.class)
+    public ResponseEntity<ConstraintException> constraintExceptionHandler(ConstraintException e) {
         log.warn(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
     }
 }

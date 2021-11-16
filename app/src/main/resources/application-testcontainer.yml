@@ -1,5 +1,5 @@
 invoicing-system:
-  database: jpa
+  database: dev
 spring:
   datasource:
     url: jdbc:postgresql://localhost:${DB_PORT:5432}/test

@@ -8,8 +8,7 @@ import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.dto.TaxCalculation
 import pl.futurecollars.invoicing.service.TaxCalculatorService
 import spock.lang.Specification
-
-import java.time.LocalDateTime
+import java.time.LocalDate;
 
 class TaxCalculatorServiceUnitTest extends Specification {
 
@@ -23,8 +22,8 @@ class TaxCalculatorServiceUnitTest extends Specification {
         given: "invoices in database without personal car expenses"
         Company company1 = CompanyFixture.getCompany()
         Company company2 = CompanyFixture.getCompany()
-        Invoice invoice1 = new Invoice(UUID.randomUUID(),"number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(),"number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
         invoiceDatabase.getAll() >> [invoice1, invoice2]
         companyDatabase.getAll() >> [company1]
 
@@ -52,8 +51,8 @@ class TaxCalculatorServiceUnitTest extends Specification {
         given:"invoices in database with personal car expenses"
         Company company1 = CompanyFixture.getCompany()
         Company company2 = CompanyFixture.getCompany()
-        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDateTime.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
-        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDateTime.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
+        Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
+        Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
         invoiceDatabase.getAll() >> [invoice1, invoice2]
         companyDatabase.getAll() >> [company1]
 

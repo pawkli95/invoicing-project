@@ -19,13 +19,13 @@ import pl.futurecollars.invoicing.model.Invoice;
 public class DatabaseConfiguration {
 
     @Bean
-    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
-    public Database<Invoice> getJpaDatabase(InvoiceRepository invoiceRepository) {
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "dev")
+    public Database<Invoice> getInvoiceDatabase(InvoiceRepository invoiceRepository) {
         return new InvoiceDatabase(invoiceRepository);
     }
 
     @Bean
-    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "jpa")
+    @ConditionalOnProperty(name = "invoicing-system.database", havingValue = "dev")
     public Database<Company> getCompanyDatabase(CompanyRepository companyRepository) {
         return new CompanyDatabase(companyRepository);
     }

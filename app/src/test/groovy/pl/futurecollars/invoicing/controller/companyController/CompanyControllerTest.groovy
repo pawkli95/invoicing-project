@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.controller
+package pl.futurecollars.invoicing.controller.companyController
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
@@ -8,6 +8,7 @@ import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import pl.futurecollars.invoicing.controller.CompanyController
 import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import spock.lang.Specification
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureJsonTesters
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class CompanyControllerTest extends Specification {
 
     @Autowired

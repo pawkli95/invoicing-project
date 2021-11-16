@@ -13,15 +13,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
+import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.InvoiceEntry;
 import pl.futurecollars.invoicing.service.InvoiceService;
 
+@CrossOrigin
 @Api(tags = {"invoice-controller"})
 @Slf4j
 @RequiredArgsConstructor
@@ -32,8 +36,10 @@ public class InvoiceController implements InvoiceControllerInterface {
     private final InvoiceService invoiceService;
 
     @Override
-    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) {
+    public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) throws ConstraintException {
         log.debug("Request to save invoice");
+        invoice.setDate(LocalDate.now());
+        invoice.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
         return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.saveInvoice(invoice));
     }
 
@@ -50,10 +56,10 @@ public class InvoiceController implements InvoiceControllerInterface {
             invoicePredicate = Objects::nonNull;
         }
         if (before != null) {
-            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().toLocalDate().isBefore(before));
+            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().isBefore(before));
         }
         if (after != null) {
-            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().toLocalDate().isAfter(after));
+            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().isAfter(after));
         }
         if (sellerTaxId != null) {
             invoicePredicate = invoicePredicate.and(invoice -> invoice.getSeller().getTaxIdentificationNumber().equals(sellerTaxId));
@@ -77,11 +83,12 @@ public class InvoiceController implements InvoiceControllerInterface {
     @Override
     public ResponseEntity<InvoiceDto> update(@RequestBody @Valid InvoiceDto updatedInvoice) throws NoSuchElementException {
         log.debug("Request to update invoice");
+        updatedInvoice.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
         return ResponseEntity.ok().body(invoiceService.updateInvoice(updatedInvoice));
     }
 
     @Override
-    public ResponseEntity<Void> delete(@PathVariable UUID id) throws NoSuchElementException {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) throws NoSuchElementException, ConstraintException {
         log.debug("Request to delete invoice with id: " + id.toString());
         invoiceService.deleteInvoice(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

@@ -12,7 +12,7 @@ import pl.futurecollars.invoicing.service.CompanyService
 import spock.lang.Specification
 
 @SpringBootTest
-@ActiveProfiles("jpaTest")
+@ActiveProfiles("test")
 class CompanyServiceIntegrationTest extends Specification{
 
     @Autowired

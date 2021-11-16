@@ -9,4 +9,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL95Dialect
 invoicing-system:
-  database: jpa
+  database: dev

@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
@@ -17,7 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureJsonTesters
 @AutoConfigureMockMvc
 @SpringBootTest
-abstract class InvoiceControllerIntegrationTest extends Specification{
+@ActiveProfiles("test")
+class InvoiceControllerIntegrationTest extends Specification{
 
     @Autowired
     MockMvc mockMvc
