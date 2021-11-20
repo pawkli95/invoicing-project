@@ -7,6 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: haslo
+      POSTGRES_DB: postgres
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
@@ -30,6 +31,8 @@ services:
       context: .
     ports:
     - "8080:8080"
+    depends_on:
+    - postgres
 
 volumes:
   postgres:

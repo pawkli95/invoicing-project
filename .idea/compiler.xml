@@ -13,6 +13,6 @@
         <module name="invoicing-system-Pawel-Klimek.app.test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="15" />
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>

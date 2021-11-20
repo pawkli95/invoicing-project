@@ -1,0 +1,13 @@
+--CREATE TABLE roles
+--(
+--id UUID UNIQUE NOT NULL,
+--authority varchar(15) NOT NULL,
+--PRIMARY KEY (id)
+--);
+--
+--INSERT INTO roles (authority)
+--VALUES
+--(
+--('USER'),
+--('ADMIN')
+--)

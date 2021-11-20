@@ -1,0 +1,7 @@
+--CREATE TABLE users
+--(
+--id UUID UNIQUE NOT NULL,
+--username varchar(20) UNIQUE NOT NULL,
+--password varchar(40) NOT NULL,
+--PRIMARY KEY (id)
+--);
