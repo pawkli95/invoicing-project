@@ -8,4 +8,5 @@ import pl.futurecollars.invoicing.model.Role;
 @Repository
 public interface RolesRepository extends JpaRepository<Role, UUID> {
 
+    Role findByAuthority(String authority);
 }

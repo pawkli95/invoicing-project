@@ -15,19 +15,12 @@ import { PasswordMatchValidator } from 'src/app/validators/PasswordMatchValidato
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-
-  roles: Array<Role> = []
   
   constructor(private registerService: RegisterService, private router: Router,
     private toastr: ToastrService) {
    }
 
   ngOnInit(): void {
-    this.registerService.getRoles().subscribe(data => {
-      this.roles = data
-    }, error => {
-      console.log(error)
-    })
   }
 
   formGroup: FormGroup = new FormGroup({
@@ -44,16 +37,6 @@ export class RegisterComponent implements OnInit {
   }
   )
 
-  private getUserRole(): Role {
-    console.log(this.roles)
-    for(const role of this.roles) {
-      if(role.authority === 'USER') {
-        return role
-      }
-    }
-    return {id: '', authority: ''}
-  }
-
   public registerUser() {
     this.registerService.register({
       username: this.formGroup.get('username')?.value,
@@ -62,7 +45,7 @@ export class RegisterComponent implements OnInit {
       lastName: this.formGroup.get('lastName')?.value,
       id: '',
       registrationDate: '',
-      role: this.getUserRole()
+      role: {id: '', authority: ''}
     }).subscribe(() => {
       this.toastr.success("User created successfully")
       this.goToLogin()

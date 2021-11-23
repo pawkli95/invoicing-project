@@ -2,14 +2,12 @@ package pl.futurecollars.invoicing.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.UserDto;
-import pl.futurecollars.invoicing.model.Role;
-import pl.futurecollars.invoicing.model.User;
-import pl.futurecollars.invoicing.service.RoleService;
 import pl.futurecollars.invoicing.service.UserService;
 
 @Api(tags = {"user-controller"})
@@ -33,15 +28,11 @@ import pl.futurecollars.invoicing.service.UserService;
 public class UserController {
 
     private final UserService userService;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
     @CrossOrigin
     @ApiOperation(value = "Register new user")
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody User user) {
-        user.setRegistrationDate(LocalDate.now());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<Void> register(@RequestBody UserDto user) {
         userService.saveUser(user);
         log.info("Registered user" + user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -64,12 +55,5 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok().body(userService.getUser(id));
-    }
-
-    @CrossOrigin
-    @ApiOperation(value = "Get roles")
-    @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getRoles() {
-        return ResponseEntity.ok().body(roleService.getRoles());
     }
 }

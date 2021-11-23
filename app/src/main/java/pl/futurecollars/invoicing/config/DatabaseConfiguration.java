@@ -13,7 +13,8 @@ import pl.futurecollars.invoicing.db.invoices.InvoiceRepository;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 
-@EnableJpaRepositories(basePackages = {"pl.futurecollars.invoicing.db.invoices", "pl.futurecollars.invoicing.db.companies"})
+@EnableJpaRepositories(basePackages = {"pl.futurecollars.invoicing.db.invoices", "pl.futurecollars.invoicing.db.companies",
+    "pl.futurecollars.invoicing.db.roles"})
 @Slf4j
 @Configuration
 public class DatabaseConfiguration {

@@ -3,7 +3,7 @@
 <input type="text" class="form-control" [(ngModel)] = "searchText" placeholder="Search">
 <table class = "table table-striped border mt-1">
     <thead>
-        <tr>
+        <tr *ngIf = "!isListEmpty()">
             <th>Number</th>
             <th>Issue date</th>
             <th>Seller</th>

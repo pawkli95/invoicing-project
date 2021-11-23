@@ -9,10 +9,13 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.testcontainers.containers.PostgreSQLContainer
 import pl.futurecollars.invoicing.controller.CompanyController
 import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import spock.lang.Specification
+import spock.lang.Subject
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -20,9 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureJsonTesters
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("testcontainer")
 @WithMockUser(authorities = "USER")
 class CompanyControllerTest extends Specification {
+
+    @Subject.Container
+    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")
+            .withDatabaseName("test")
+            .withUsername("test")
+            .withPassword("test")
+
+    static {
+        postgreSQLContainer.start()
+        System.setProperty("DB_PORT", String.valueOf(postgreSQLContainer.getFirstMappedPort()))
+    }
 
     @Autowired
     CompanyController companyController
