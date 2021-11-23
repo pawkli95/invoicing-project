@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoicing.dto.InvoiceDto
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
+@WithMockUser(authorities = "USER")
 class InvoiceControllerIntegrationTest extends Specification{
 
     @Autowired
@@ -277,6 +279,7 @@ class InvoiceControllerIntegrationTest extends Specification{
                 .perform(delete("/api/invoices/" + id.toString()))
                 .andExpect(status().isNotFound())
     }
+
 
     private List<InvoiceDto> addInvoices(int number) {
         List<InvoiceDto> invoiceList = new ArrayList<>()

@@ -6,24 +6,24 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pl.futurecollars.invoicing.model.User;
-
-import java.util.Date;
 
 @Slf4j
 @Component
 public class JwtUtil {
 
-    private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
-
+    @Value("${invoicing-system.jwt.secret}")
+    private String jwtSecret;
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
@@ -37,7 +37,7 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    public Date getExpirationDate(String token) {
+    private Date getExpirationDate(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -47,6 +47,10 @@ public class JwtUtil {
     }
 
     public boolean validate(String token) {
+        if (getExpirationDate(token).before(new Date())) {
+            log.error("Expired token");
+            return false;
+        }
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;

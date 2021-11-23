@@ -24,7 +24,9 @@ public class SwaggerConfiguration {
                 .tags(
                         new Tag("invoice-controller", "Controller used to manage invoices"),
                         new Tag("tax-calculator-controller", "Controller used to calculate taxes"),
-                        new Tag("company-controller", "Controller used to manage companies")
+                        new Tag("company-controller", "Controller used to manage companies"),
+                        new Tag("auth-controller", "Controller used to authenticate users"),
+                        new Tag("user-controller", "Controller used to manage users")
                 )
                 .apiInfo(apiInfo());
     }
@@ -32,7 +34,7 @@ public class SwaggerConfiguration {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .description("Application to manage invoices")
-                .title("Invoicing system by Paweł Klimek")
+                .title("Invoicing System by Paweł Klimek")
                 .license("No license")
                 .contact(new Contact(
                         "Paweł Klimek",

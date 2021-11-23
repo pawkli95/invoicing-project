@@ -13,4 +13,8 @@ spring:
   profiles:
     active: dev
 
+invoicing-system:
+  jwt:
+    secret: zdtlD3JK56m6wTTgsNFhqzjqP
+
 

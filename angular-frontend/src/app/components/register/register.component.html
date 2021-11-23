@@ -1,0 +1,75 @@
+
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card" style="border-radius: 15px;">
+              <div class="card-body p-5">
+                <h1 class="text-uppercase text-center mb-5">Sign up</h1>
+  
+                <form [formGroup] = "formGroup">
+  
+                  <div class="form-outline mb-4">
+                    <input [class.is-invalid]="firstName.invalid && firstName.touched" type="text" id="form3Example1cg" class="form-control form-control-lg"
+                    placeholder="Your First Name" formControlName = "firstName"/>
+                    <small class="text-danger" *ngIf="firstName.errors?.['required'] && (firstName.dirty || firstName.touched)">
+                        First name is required
+                    </small>
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <input [class.is-invalid]="lastName.invalid && lastName.touched" type="text" id="form3Example1cg" class="form-control form-control-lg"
+                    placeholder="Your Last Name" formControlName = "lastName" />
+                    <small class="text-danger" *ngIf="lastName.errors?.['required'] && (lastName.dirty || lastName.touched)">
+                        Last name is required
+                    </small>
+                  </div>
+  
+                  <div class="form-outline mb-4">
+                    <input [class.is-invalid]="username.invalid && username.touched" type="email" id="form3Example3cg" class="form-control form-control-lg"
+                    placeholder="Your Email" formControlName = "username" />
+                    <div class = "text-danger" *ngIf="username.invalid && (username.dirty || username.touched)">
+                        <small *ngIf = "username.errors?.['required']">
+                            Email is required
+                        </small>
+                        <small *ngIf = "username.errors?.['email']">
+                            Enter correct email
+                        </small>
+                    </div>
+                  </div>
+  
+                  <div class="form-outline mb-4">
+                    <input [class.is-invalid]="password.invalid && password.touched" type="password" id="form3Example4cg" class="form-control form-control-lg"
+                    placeholder="Your Password" formControlName = "password" />
+                    <div class = "text-danger" *ngIf="password.invalid && (password.dirty || password.touched)" >
+                        <small *ngIf = "password.errors?.['required']">
+                            Password is required
+                        </small>
+                        <small *ngIf = "password.errors?.['pattern'] || password.errors?.['minlength']">
+                            Password must contain at least 8 characters, one uppercase letter, lowercase letter and a number
+                        </small>
+                    </div>
+                  </div>
+  
+                  <div class="form-outline mb-4">
+                    <input [class.is-invalid]="confirmPassword.invalid && confirmPassword.touched"  type="password" id="form3Example4cdg" class="form-control form-control-lg"
+                    placeholder="Repeat Your Password" formControlName = "confirmPassword"/>
+                    <small class = "text-danger" *ngIf = "formGroup.hasError('notSame')">
+                        Passwords mismatch
+                    </small>
+                  </div>
+  
+                  <div class="d-flex justify-content-center">
+                    <button type="button" (click) = "registerUser()" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" [disabled] = "formGroup.invalid">Register</button>
+                  </div>
+  
+                  <p class="text-center text-muted mt-5 mb-0">Have already an account? <a (click) = "goToLogin()" class="fw-bold text-body"><u>Login here</u></a></p>
+  
+                </form>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

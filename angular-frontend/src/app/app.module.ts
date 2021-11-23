@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CompanyListComponent } from './components/company-list/company-list.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import { CompanyComponent } from './components/company/company.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CreateCompanyComponent } from './components/create-company/create-company.component';
@@ -20,6 +20,11 @@ import { CompanyPipe } from './pipes/company.pipe';
 import { CompanyInvoiceListComponent } from './components/company-invoice-list/company-invoice-list.component';
 import { InvoicePipe } from './pipes/invoice.pipe';
 import { ToastrModule } from 'ngx-toastr';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { HomeComponent } from './components/home/home.component';
+import { JwtInterceptor } from './auth/interceptors/jwt.interceptor';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 
 @NgModule({
@@ -36,6 +41,10 @@ import { ToastrModule } from 'ngx-toastr';
     CompanyPipe,
     CompanyInvoiceListComponent,
     InvoicePipe,
+    RegisterComponent,
+    LoginComponent,
+    HomeComponent,
+    UserListComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +57,9 @@ import { ToastrModule } from 'ngx-toastr';
     MatInputModule,
     ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
