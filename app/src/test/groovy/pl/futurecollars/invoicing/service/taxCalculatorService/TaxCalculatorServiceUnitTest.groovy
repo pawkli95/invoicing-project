@@ -1,5 +1,5 @@
 package pl.futurecollars.invoicing.service.taxCalculatorService
-
+// TODO: MP: analogicznie jak w CompanyController - nazwa pakietu do zmiany
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture

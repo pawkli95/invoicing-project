@@ -14,12 +14,14 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> noSuchElementExceptionHandler(NoSuchElementException e) {
+        //TODO: MP: a ten log jakos uzyteczny jest do czegos? Jak nie to nie ma sensu tego logowac
         log.warn("No such element in database");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(ConstraintException.class)
     public ResponseEntity<ConstraintException> constraintExceptionHandler(ConstraintException e) {
+        //TODO: MP: a ten log jakos uzyteczny jest do czegos? Jak nie to nie ma sensu tego logowac
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
     }

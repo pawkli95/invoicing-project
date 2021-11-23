@@ -26,6 +26,10 @@ public class TaxCalculatorService {
     private final Database<Company> companyDatabase;
 
     public TaxCalculation getTaxCalculation(String taxId) throws NoSuchElementException {
+        // TODO: MP: można ciut prościej:
+        // return checkForTaxId(taxId)
+        // .map(mapToTaxCalculation[..])
+        // .orElseThrow(...)
         Optional<Company> optional = checkForTaxId(taxId);
         if (optional.isPresent()) {
             Company company = optional.get();

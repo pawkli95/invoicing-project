@@ -40,6 +40,7 @@ public class UserController {
     @ApiOperation(value = "Register new user")
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody User user) {
+        // TODO: MP: logika do serwisu - tutaj zadne passwordEncodery itd, jedynie co tutaj sie powinno wydarzyc to userService.save/registerUser(user)
         user.setRegistrationDate(LocalDate.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);

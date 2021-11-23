@@ -1,5 +1,5 @@
 package pl.futurecollars.invoicing.service.taxCalculatorService
-
+// TODO: MP: analogicznie jak w CompanyController - nazwa pakietu do zmiany
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

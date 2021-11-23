@@ -18,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    //TODO: MP: to może być void
     public User saveUser(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new ConstraintException("Username already in use");

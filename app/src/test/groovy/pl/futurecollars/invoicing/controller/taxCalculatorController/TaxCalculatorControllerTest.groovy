@@ -1,4 +1,5 @@
 package pl.futurecollars.invoicing.controller.taxCalculatorController
+// TODO: MP: analogicznie jak w CompanyController - nazwa pakietu do zmiany
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters

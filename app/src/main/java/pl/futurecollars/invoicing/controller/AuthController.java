@@ -21,6 +21,9 @@ import pl.futurecollars.invoicing.dto.AuthResponse;
 import pl.futurecollars.invoicing.model.User;
 
 @Api(tags = {"auth-controller"})
+// TODO: MP: Tutaj zwróć uwagę czy aby na pewno calkowite CrossOrigin jest najlepszą opcja czy nie lepiej bezpośrednio podać
+// adres ip (tzw. origins - w naszym przypadku frontend - localhost:4200) do serwisu z którym rozmawiamy. CrossOrigin jest zabezpieczeniem, które
+// nie można od tak wyłączać - trzeba to robić z głową, aby ktoś nam użytkowników nie hakował ;)
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController

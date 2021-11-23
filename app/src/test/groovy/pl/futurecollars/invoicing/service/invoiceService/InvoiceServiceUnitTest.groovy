@@ -1,5 +1,5 @@
 package pl.futurecollars.invoicing.service.invoiceService
-
+// TODO: MP: analogicznie jak w CompanyController - nazwa pakietu do zmiany
 import org.mapstruct.factory.Mappers
 import pl.futurecollars.invoicing.db.Database
 import pl.futurecollars.invoicing.dto.InvoiceDto

@@ -51,6 +51,19 @@ public class InvoiceController implements InvoiceControllerInterface {
                                                 @RequestParam(value = "sellerTaxId", required = false) String sellerTaxId,
                                                 @RequestParam(value = "buyerTaxId", required = false) String buyerTaxId) {
         log.debug("Request to return invoices");
+        //TODO: MP: Fajne rozwiązanie, ale...
+        // dobrze by było, aby w kontrolerze nie było logiki więc osobiście co bym zrobił:
+        // 1. klasa, która trzyma  te wszystkie parametry w kupie np. jakiś InvoiceFilterParameters czy cos takiego
+        // tam zrobiłbym builder, aby tutaj zbudować obiekt na zasadzie: InvoiceFilterParameters.withAfter(after).withSellerTaxId(...).build();
+        // ten obiekt mógłby zwracać zamiast getterów zwykłych to Optionale.
+        // 2. następnie to bym przesłał do serwisu
+        // w serwisie bym zainjectował osobny serwis, który obliczłby ten Predicate<Invoice> nazwaSerwisu.calculate(invoiceFilterParameters)
+        // 3. w klasie do obliczania predicate wykorzystałbym to, że InvoiceFilterParameters zwracałby Optionale i zamiast:
+        //  if (before != null) {
+        //            invoicePredicate = invoicePredicate.and(invoice -> invoice.getDate().isBefore(before));
+        //        }
+        // zrobiłym: invoiceFileParameters.before().ifPresent(before -> invoicePredicate.and(...>); i pozbył się tych nulli ;)
+
         Predicate<Invoice> invoicePredicate = null;
         if (before != null || after != null || sellerTaxId != null || buyerTaxId != null) {
             invoicePredicate = Objects::nonNull;
