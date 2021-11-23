@@ -59,6 +59,11 @@ export class CompanyListComponent implements OnInit {
       console.log(error)
     });
   }
+
+  isListEmpty(): boolean {
+    return this.list.length === 0
+  }
 }
+
 
 

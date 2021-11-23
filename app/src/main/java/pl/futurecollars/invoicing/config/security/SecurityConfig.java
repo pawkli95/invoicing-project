@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/users/register").permitAll()
                 .antMatchers("/api/users/roles").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/").hasAuthority(Role.ADMIN)
+                .antMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority(Role.ADMIN)
                 .antMatchers("/api/invoices/**").hasAuthority(Role.USER)
                 .antMatchers("/api/companies/**").hasAuthority(Role.USER)
                 .antMatchers("/api/tax").hasAuthority(Role.USER)
