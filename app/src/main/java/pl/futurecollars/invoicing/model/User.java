@@ -1,18 +1,21 @@
 package pl.futurecollars.invoicing.model;
 
-import lombok.Data;
-import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
+import javax.validation.constraints.Email;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @Entity
@@ -21,19 +24,27 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue
-    @Getter
     private UUID id;
 
     @Column(unique = true)
+    @Email
     private String username;
 
     private String password;
 
-    private Set<Role> roles;
+    private String firstName;
+
+    private String lastName;
+
+    private LocalDate registrationDate;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return List.of(role);
     }
 
     @Override

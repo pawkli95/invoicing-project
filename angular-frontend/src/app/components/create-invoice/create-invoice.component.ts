@@ -79,7 +79,7 @@ vat = {
     this.invoiceService.saveInvoice({
       ...this.formGroup.value
     }).subscribe(() => {
-      this.toastr.success('Created successfully')
+      this.toastr.success('Invoice created successfully')
     },
     err => {
       this.toastr.error(err.error.message)

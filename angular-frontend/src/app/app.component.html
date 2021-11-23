@@ -4,7 +4,7 @@
   </head>
   <body>
       <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Invoicing system</a>
+        <a class="navbar-brand" (click) = "goToHome()">Invoicing System</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,10 +12,22 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" (click) = "goToCompanies()"  routerLinkActive="active">Companies</a>
+              <a *ngIf = "isUser"class="nav-link" (click) = "goToCompanies()"  routerLinkActive="active">Companies</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" (click) = "goToInvoices()"  routerLinkActive="active">Invoices</a>
+              <a *ngIf = "isUser" class="nav-link" (click) = "goToInvoices()"  routerLinkActive="active">Invoices</a>
+            </li>
+            <li class="nav-item">
+              <a *ngIf = "isAdmin" class="nav-link" (click) = "goToUsers()"  routerLinkActive="active">Users</a>
+            </li>
+            <li class="nav-item">
+              <a *ngIf = "!isLogged"class="nav-link" (click) = "goToLogin()"  routerLinkActive="active">Sign in</a>
+            </li>
+            <li class="nav-item">
+              <a *ngIf = "!isLogged" class="nav-link" (click) = "goToRegister()"  routerLinkActive="active">Sign up</a>
+            </li>
+            <li class="nav-item">
+              <a  *ngIf = "isLogged" class="nav-link" (click) = "logout()"  routerLinkActive="active">Logout</a>
             </li>
           </ul>
         </div>
@@ -24,6 +36,13 @@
       <main role="main" class="container">
         <router-outlet></router-outlet>
       </main>
+      <footer class="text-center text-white fixed-bottom" style="background-color: #21081a;">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+          © 2021 Copyright:
+          <a class="text-white" href="https://github.com/pawkli95">Paweł Klimek</a>
+        </div>
+       
+      </footer>
   </body>
 </html>
 

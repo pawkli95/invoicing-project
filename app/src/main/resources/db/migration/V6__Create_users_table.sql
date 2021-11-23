@@ -1,7 +1,16 @@
---CREATE TABLE users
---(
---id UUID UNIQUE NOT NULL,
---username varchar(20) UNIQUE NOT NULL,
---password varchar(40) NOT NULL,
---PRIMARY KEY (id)
---);
+CREATE TABLE users
+(
+id UUID UNIQUE NOT NULL,
+username VARCHAR(30) UNIQUE NOT NULL,
+password VARCHAR(150) NOT NULL,
+role_id UUID NOT NULL,
+first_name VARCHAR(20) NOT NULL,
+last_name VARCHAR(20) NOT NULL,
+registration_date DATE NOT NULL,
+PRIMARY KEY(id),
+CONSTRAINT fk_role
+FOREIGN KEY (role_id)
+REFERENCES roles(id)
+);
+
+

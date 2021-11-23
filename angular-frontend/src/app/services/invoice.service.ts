@@ -10,7 +10,7 @@ import { InvoiceEntry } from '../dto/invoice-entries';
 })
 export class InvoiceService {
 
-  private url: string = environment.apiBaseUrl + "/invoices"
+  private url: string = environment.apiBaseUrl + "/api/invoices"
 
   constructor(private httpClient: HttpClient) { }
 
