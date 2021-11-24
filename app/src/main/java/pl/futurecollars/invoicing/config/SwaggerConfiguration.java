@@ -38,7 +38,7 @@ public class SwaggerConfiguration {
                 .license("No license")
                 .contact(new Contact(
                         "Paweł Klimek",
-                        "pawel.klimek.pl",
+                        "https://github.com/pawkli95",
                         "pawkli95@gmail.com"))
                 .build();
 

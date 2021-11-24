@@ -38,8 +38,6 @@ public class InvoiceController implements InvoiceControllerInterface {
     @Override
     public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) throws ConstraintException {
         log.debug("Request to save invoice");
-        invoice.setDate(LocalDate.now());
-        invoice.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
         return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.saveInvoice(invoice));
     }
 
