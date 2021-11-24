@@ -1,5 +1,6 @@
 package pl.futurecollars.invoicing.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import pl.futurecollars.invoicing.db.Database;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper;
 import pl.futurecollars.invoicing.model.Invoice;
+import pl.futurecollars.invoicing.model.InvoiceEntry;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +22,8 @@ public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
 
     public InvoiceDto saveInvoice(InvoiceDto invoiceDto) {
+        invoiceDto.setDate(LocalDate.now());
+        invoiceDto.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
         Invoice invoice = invoiceMapper.toEntity(invoiceDto);
         Invoice returnedInvoice = invoiceDatabase.save(invoice);
         return invoiceMapper.toDto(returnedInvoice);

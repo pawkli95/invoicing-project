@@ -4,14 +4,56 @@
 
 package pl.futurecollars.invoicing;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.futurecollars.invoicing.db.roles.RolesRepository;
+import pl.futurecollars.invoicing.db.users.UserRepository;
+import pl.futurecollars.invoicing.model.User;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@RequiredArgsConstructor
 @SpringBootApplication
-public class App {
+public class App implements CommandLineRunner {
+
+    private final RolesRepository rolesRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        List<User> users = userRepository.findAll();
+        boolean adminExists = false;
+        for(User user : users) {
+            if (user.getRole().getAuthority().equals("ADMIN")) {
+                adminExists = true;
+                break;
+            }
+        }
+        if(!adminExists) {
+            User admin = User
+                    .builder()
+                    .id(UUID.randomUUID())
+                    .username("admin@admin")
+                    .password(passwordEncoder.encode("admin"))
+                    .firstName("Admin")
+                    .lastName("Kowalski")
+                    .registrationDate(LocalDate.now())
+                    .role(rolesRepository.findByAuthority("ADMIN"))
+                    .build();
+
+            userRepository.save(admin);
+        }
     }
 }
 
