@@ -42,4 +42,8 @@ export class InvoiceListComponent implements OnInit {
     })
   }
 
+  isListEmpty(): boolean {
+    return this.invoices.length === 0
+  }
+
 }

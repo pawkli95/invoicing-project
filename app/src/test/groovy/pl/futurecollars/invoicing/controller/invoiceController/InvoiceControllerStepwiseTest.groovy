@@ -6,8 +6,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.testcontainers.containers.PostgreSQLContainer
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
@@ -16,6 +18,8 @@ import pl.futurecollars.invoicing.model.InvoiceEntry
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
+import spock.lang.Subject
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -23,8 +27,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 @Stepwise
-@ActiveProfiles("test")
+@ActiveProfiles("testcontainer")
+@WithMockUser(authorities = "USER")
 class InvoiceControllerStepwiseTest extends Specification {
+
+    @Subject.Container
+    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")
+            .withDatabaseName("test")
+            .withUsername("test")
+            .withPassword("test")
+
+    static {
+        postgreSQLContainer.start()
+        System.setProperty("DB_PORT", String.valueOf(postgreSQLContainer.getFirstMappedPort()))
+    }
 
     @Autowired
     private MockMvc mockMvc

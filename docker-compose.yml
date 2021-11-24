@@ -6,7 +6,8 @@ services:
     image: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: haslo
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
@@ -22,7 +23,6 @@ services:
     ports:
       - "4200:80"
 
-
   app:
     container_name: app_container
     build:
@@ -30,6 +30,8 @@ services:
       context: .
     ports:
     - "8080:8080"
+    depends_on:
+    - postgres
 
 volumes:
   postgres:

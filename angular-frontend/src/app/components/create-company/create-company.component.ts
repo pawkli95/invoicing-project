@@ -30,7 +30,7 @@ export class CreateCompanyComponent implements OnInit {
     this.companyService.saveCompany({
       ...this.formGroup.value
     }).subscribe(() => {
-      this.toastr.success("Created successfully")
+      this.toastr.success("Company created successfully")
     },
     err => {
       this.toastr.error(err.error.message);

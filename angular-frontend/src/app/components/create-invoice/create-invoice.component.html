@@ -26,7 +26,6 @@
             <div class="div2"> 
             <label>Buyer</label>
                 <select [class.is-invalid]="buyer.invalid && buyer.touched" class="form-control" formControlName="buyer">
-                    <option [value]='' selected hidden disabled>Choose buyer</option>
                     <option *ngFor="let company of companyList" [ngValue]="company">{{company.name + ' - ' + company.taxIdentificationNumber}}</option>
                 </select>
                 <small class="text-danger" *ngIf="buyer.errors?.['required'] && (buyer.dirty || buyer.touched)">

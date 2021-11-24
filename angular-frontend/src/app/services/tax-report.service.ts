@@ -9,7 +9,7 @@ import { TaxCalculation } from '../dto/tax-report';
 })
 export class TaxReportService {
 
-  private url: string = environment.apiBaseUrl + "/tax"
+  private url: string = environment.apiBaseUrl + "/api/tax"
 
   constructor(private httpClient: HttpClient) { }
 

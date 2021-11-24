@@ -6,20 +6,36 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.testcontainers.containers.PostgreSQLContainer
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.InvoiceEntry
 import spock.lang.Specification
+import spock.lang.Subject
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @AutoConfigureJsonTesters
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("testcontainer")
+@WithMockUser(authorities = "USER")
 class InvoiceControllerIntegrationTest extends Specification{
+
+    @Subject.Container
+    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")
+            .withDatabaseName("test")
+            .withUsername("test")
+            .withPassword("test")
+
+    static {
+        postgreSQLContainer.start()
+        System.setProperty("DB_PORT", String.valueOf(postgreSQLContainer.getFirstMappedPort()))
+    }
 
     @Autowired
     MockMvc mockMvc
@@ -277,6 +293,7 @@ class InvoiceControllerIntegrationTest extends Specification{
                 .perform(delete("/api/invoices/" + id.toString()))
                 .andExpect(status().isNotFound())
     }
+
 
     private List<InvoiceDto> addInvoices(int number) {
         List<InvoiceDto> invoiceList = new ArrayList<>()
