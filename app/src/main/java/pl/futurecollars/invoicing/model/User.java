@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,22 +31,33 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 public class User implements UserDetails {
 
+    @ApiModelProperty(value = "Id", required = true)
     @Id
     @GeneratedValue
     private UUID id;
 
+    @ApiModelProperty(value = "Username/Email", required = true)
     @Column(unique = true)
     @Email
     private String username;
 
+    @ApiModelProperty(value = "Password", required = true)
+    @NotNull
     private String password;
 
+    @ApiModelProperty(value = "First Name", required = true)
+    @NotNull
     private String firstName;
 
+    @ApiModelProperty(value = "Last Name", required = true)
+    @NotNull
     private String lastName;
 
+    @ApiModelProperty(value = "Registration date", required = true)
+    @NotNull
     private LocalDate registrationDate;
 
+    @ApiModelProperty(value = "Role of user", required = true)
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "role_id")
     private Role role;

@@ -10,6 +10,12 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 
     @Override
     @Query("select distinct i from Invoice i left join fetch i.invoiceEntries left join fetch "
-            + "i.seller left join fetch i. buyer")
+            + "i.seller left join fetch i.buyer")
     List<Invoice> findAll();
+
+    boolean existsByNumber(String number);
+
+    @Query("select distinct i from Invoice i left join fetch i.invoiceEntries left join fetch "
+            + "i.seller left join fetch i.buyer where i.seller.taxIdentificationNumber = ?1")
+    List<Invoice> findBySellerTaxId(String taxId);
 }
