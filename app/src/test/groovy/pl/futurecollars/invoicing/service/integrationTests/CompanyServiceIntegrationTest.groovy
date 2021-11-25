@@ -1,9 +1,10 @@
-package pl.futurecollars.invoicing.service.companyService
+package pl.futurecollars.invoicing.service.integrationTests
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.companies.CompanyDatabase
+
+import pl.futurecollars.invoicing.db.companies.CompanyRepository
 import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.mappers.CompanyMapper
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
@@ -19,7 +20,7 @@ class CompanyServiceIntegrationTest extends Specification{
     CompanyService companyService
 
     @Autowired
-    CompanyDatabase companyDatabase
+    CompanyRepository companyDatabase
 
     @Autowired
     CompanyMapper companyMapper

@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.service.userService
+package pl.futurecollars.invoicing.service.integrationTests
 
 import org.junit.Ignore
 import org.mapstruct.factory.Mappers
@@ -14,8 +14,11 @@ import pl.futurecollars.invoicing.model.User
 import pl.futurecollars.invoicing.service.UserService
 import spock.lang.Specification
 
+import javax.transaction.Transactional
+
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class UserServiceIntegrationTest extends Specification {
 
     @Autowired
@@ -40,6 +43,17 @@ class UserServiceIntegrationTest extends Specification {
 
         then:
         userRepository.findAll().size() == 1
+    }
+
+    def "should get user by id"() {
+        given:
+        User returnedUser = userRepository.save(user)
+
+        when:
+        UserDto response = userService.getUser(returnedUser.getId())
+
+        then:
+        response == userMapper.toDto(returnedUser)
     }
 
     def "should throw ConstraintException when username already exists"() {

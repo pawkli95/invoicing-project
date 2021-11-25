@@ -21,7 +21,7 @@ import pl.futurecollars.invoicing.dto.CompanyDto;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.service.CompanyService;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 @Api(tags = {"company-controller"})
 @RequiredArgsConstructor
 @RestController

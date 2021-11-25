@@ -1,25 +1,28 @@
-package pl.futurecollars.invoicing.service.invoiceService
+package pl.futurecollars.invoicing.service.integrationTests
 
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.Database
+
+import pl.futurecollars.invoicing.db.invoices.InvoiceRepository
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
+import pl.futurecollars.invoicing.helpers.FilterParameters
 import pl.futurecollars.invoicing.model.Invoice
-import pl.futurecollars.invoicing.model.InvoiceEntry
 import pl.futurecollars.invoicing.service.InvoiceService
 import spock.lang.Specification
-import java.util.function.Predicate
+
+import javax.transaction.Transactional
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class InvoiceServiceIntegrationTest extends Specification {
 
     @Autowired
-    Database<Invoice> database
+    InvoiceRepository database
 
     @Autowired
     InvoiceService invoiceService
@@ -85,11 +88,11 @@ class InvoiceServiceIntegrationTest extends Specification {
         Invoice invoice = invoiceMapper.toEntity(invoiceDto)
         Invoice returnedInvoice = database.save(invoice)
         String taxId = invoice.getSeller().getTaxIdentificationNumber()
-        Predicate<Invoice> invoicePredicate = (Invoice i) -> i.getSeller().getTaxIdentificationNumber().equals(taxId)
+        FilterParameters filterParameters = FilterParameters.builder().sellerTaxId(taxId).build()
         InvoiceDto returnedInvoiceDto = invoiceMapper.toDto(returnedInvoice)
 
         when: "we ask invoice service to filter the database based on Predicate"
-        List<InvoiceDto> invoiceList = invoiceService.filter(invoicePredicate)
+        List<InvoiceDto> invoiceList = invoiceService.filter(filterParameters)
 
         then: "database is filtered"
         invoiceList.size() == 1
@@ -130,7 +133,7 @@ class InvoiceServiceIntegrationTest extends Specification {
             invoiceService.deleteInvoice(returnedInvoice.getId())
 
             then: "database is empty"
-            database.getAll().isEmpty()
+            database.findAll().isEmpty()
         }
 
         def "should throw exception when deleting nonexistent invoice"() {
@@ -142,8 +145,8 @@ class InvoiceServiceIntegrationTest extends Specification {
         }
 
         def clearDatabase() {
-            for (Invoice invoice : database.getAll()) {
-                database.delete(invoice.getId())
+            for (Invoice invoice : database.findAll()) {
+                database.deleteById(invoice.getId())
             }
         }
 }

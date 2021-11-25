@@ -20,7 +20,7 @@ import pl.futurecollars.invoicing.dto.UserDto;
 import pl.futurecollars.invoicing.service.UserService;
 
 @Api(tags = {"user-controller"})
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,13 +29,11 @@ public class UserController {
 
     private final UserService userService;
 
-    @CrossOrigin
     @ApiOperation(value = "Register new user")
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UserDto user) {
-        userService.saveUser(user);
+    public ResponseEntity<UserDto> register(@RequestBody UserDto user) {
         log.info("Registered user" + user.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
     }
 
     @ApiOperation(value = "Get all users")

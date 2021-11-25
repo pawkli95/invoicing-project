@@ -1,9 +1,11 @@
-package pl.futurecollars.invoicing.service.taxCalculatorService
+package pl.futurecollars.invoicing.service.integrationTests
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.Database
+
+import pl.futurecollars.invoicing.db.companies.CompanyRepository
+import pl.futurecollars.invoicing.db.invoices.InvoiceRepository
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.model.Company
@@ -19,10 +21,10 @@ import java.time.LocalDate;
 class TaxCalculatorServiceIntegrationTest extends Specification {
 
     @Autowired
-    Database<Invoice> invoiceDatabase
+    InvoiceRepository invoiceDatabase
 
     @Autowired
-    Database<Company> companyDatabase
+    CompanyRepository companyDatabase
 
     @Autowired
     TaxCalculatorService taxCalculatorService
@@ -117,16 +119,16 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     void deleteInvoices() {
-        List<Invoice> list = invoiceDatabase.getAll()
+        List<Invoice> list = invoiceDatabase.findAll()
         for(Invoice i : list) {
-            invoiceDatabase.delete(i.getId())
+            invoiceDatabase.deleteById(i.getId())
         }
     }
 
     void deleteCompanies() {
-        List<Company> list = companyDatabase.getAll()
+        List<Company> list = companyDatabase.findAll()
         for(Company c : list) {
-            companyDatabase.delete(c.getId())
+            companyDatabase.deleteById(c.getId())
         }
     }
 }

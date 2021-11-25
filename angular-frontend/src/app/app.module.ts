@@ -25,6 +25,7 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { JwtInterceptor } from './auth/interceptors/jwt.interceptor';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { PrivateAuthGuard } from './auth/auth-guards/private-auth.guard';
 
 
 @NgModule({

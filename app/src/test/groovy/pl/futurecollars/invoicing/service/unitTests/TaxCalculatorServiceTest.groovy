@@ -1,6 +1,8 @@
-package pl.futurecollars.invoicing.service.taxCalculatorService
+package pl.futurecollars.invoicing.service.unitTests
 
-import pl.futurecollars.invoicing.db.Database
+
+import pl.futurecollars.invoicing.db.companies.CompanyRepository
+import pl.futurecollars.invoicing.db.invoices.InvoiceRepository
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.model.Company
@@ -10,11 +12,11 @@ import pl.futurecollars.invoicing.service.TaxCalculatorService
 import spock.lang.Specification
 import java.time.LocalDate;
 
-class TaxCalculatorServiceUnitTest extends Specification {
+class TaxCalculatorServiceTest extends Specification {
 
-    Database<Invoice> invoiceDatabase = Mock()
+    InvoiceRepository invoiceDatabase = Mock()
 
-    Database<Company> companyDatabase = Mock()
+    CompanyRepository companyDatabase = Mock()
 
     TaxCalculatorService taxCalculatorService = new TaxCalculatorService(invoiceDatabase, companyDatabase)
 
@@ -24,8 +26,8 @@ class TaxCalculatorServiceUnitTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Invoice invoice1 = new Invoice(UUID.randomUUID(),"number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
-        invoiceDatabase.getAll() >> [invoice1, invoice2]
-        companyDatabase.getAll() >> [company1]
+        invoiceDatabase.findAll() >> [invoice1, invoice2]
+        companyDatabase.findAll() >> [company1]
 
         when:"we ask tax calculator service to calculate tax"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
@@ -53,8 +55,8 @@ class TaxCalculatorServiceUnitTest extends Specification {
         Company company2 = CompanyFixture.getCompany()
         Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), company2, company1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
-        invoiceDatabase.getAll() >> [invoice1, invoice2]
-        companyDatabase.getAll() >> [company1]
+        invoiceDatabase.findAll() >> [invoice1, invoice2]
+        companyDatabase.findAll() >> [company1]
 
         when:"we ask tax calculator service to calculate tax"
         TaxCalculation taxCalculation = taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
@@ -76,9 +78,9 @@ class TaxCalculatorServiceUnitTest extends Specification {
         taxCalculation.getFinalIncomeTaxValue() == BigDecimal.valueOf(219)
     }
 
-    def "should throw NoSuchElement exception when tax id is not in database"() {
+    def "should throw NoSuchElementException when tax id is not in database"() {
         given:"an empty database"
-        companyDatabase.getAll() >> Collections.emptyList()
+        companyDatabase.findAll() >> Collections.emptyList()
         Company company = CompanyFixture.getCompany()
 
         when:"we ask tax calculator service to calculate tax"
