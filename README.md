@@ -13,10 +13,15 @@ Application used to manage invoices, where you can add, edit or delete companies
 
 #Demo
 
+Register and login
 ![](Demo/demo1.gif)
+Create company
 ![](Demo/demo2.gif)
+Create invoice
 ![](Demo/demo3.gif)
+Tax report
 ![](Demo/demo4.gif)
+Admin
 ![](Demo/demo5.gif)
 
 
