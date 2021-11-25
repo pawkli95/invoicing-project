@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.controller.invoiceController
+package pl.futurecollars.invoicing.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters

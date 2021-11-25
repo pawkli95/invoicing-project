@@ -5,11 +5,9 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.db.Database;
-import pl.futurecollars.invoicing.db.companies.CompanyRepository;
+import pl.futurecollars.invoicing.repository.CompanyRepository;
 import pl.futurecollars.invoicing.dto.CompanyDto;
 import pl.futurecollars.invoicing.dto.mappers.CompanyMapper;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
@@ -31,12 +29,18 @@ public class CompanyService {
         return companyMapper.toDto(companyRepository.save(company));
     }
 
-    public CompanyDto getById(UUID id) {
+    public CompanyDto getById(UUID id) throws NoSuchElementException {
+        if(!companyRepository.existsById(id)) {
+            throw new NoSuchElementException("Company doesn't exist");
+        }
         Company company = companyRepository.getById(id);
         return companyMapper.toDto(company);
     }
 
     public void delete(UUID id) throws NoSuchElementException, ConstraintException {
+        if(!companyRepository.existsById(id)) {
+            throw new NoSuchElementException("Company doesn't exist");
+        }
         try {
             companyRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
@@ -50,6 +54,9 @@ public class CompanyService {
     }
 
     public CompanyDto update(CompanyDto companyDto) {
+        if(!companyRepository.existsById(companyDto.getId())) {
+            throw new NoSuchElementException("Company doesn't exist");
+        }
         Company company = companyMapper.toEntity(companyDto);
         Company returnedCompany = companyRepository.save(company);
         return companyMapper.toDto(returnedCompany);

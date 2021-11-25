@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.controller.invoiceController
+package pl.futurecollars.invoicing.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("testcontainer")
 @WithMockUser(authorities = "USER")
-class InvoiceControllerIntegrationTest extends Specification{
+class InvoiceControllerTest extends Specification{
 
     @Subject.Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")

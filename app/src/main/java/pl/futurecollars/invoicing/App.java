@@ -9,8 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.futurecollars.invoicing.db.roles.RolesRepository;
-import pl.futurecollars.invoicing.db.users.UserRepository;
+import pl.futurecollars.invoicing.repository.RolesRepository;
+import pl.futurecollars.invoicing.repository.UserRepository;
 import pl.futurecollars.invoicing.model.User;
 
 import java.time.LocalDate;

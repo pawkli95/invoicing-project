@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.service.userService
+package pl.futurecollars.invoicing.service.unitTests
 
 import org.mapstruct.factory.Mappers
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -14,7 +14,7 @@ import pl.futurecollars.invoicing.model.User
 import pl.futurecollars.invoicing.service.UserService
 import spock.lang.Specification
 
-class UserServiceUnitTest extends Specification{
+class UserServiceTest extends Specification{
 
     UserRepository userRepository;
 

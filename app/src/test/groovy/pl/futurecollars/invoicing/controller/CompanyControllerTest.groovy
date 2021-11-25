@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.controller.companyController
+package pl.futurecollars.invoicing.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
@@ -38,8 +38,6 @@ class CompanyControllerTest extends Specification {
         System.setProperty("DB_PORT", String.valueOf(postgreSQLContainer.getFirstMappedPort()))
     }
 
-    @Autowired
-    CompanyController companyController
 
     @Autowired
     MockMvc mockMvc

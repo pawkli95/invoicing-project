@@ -21,7 +21,7 @@ import pl.futurecollars.invoicing.dto.AuthResponse;
 import pl.futurecollars.invoicing.model.User;
 
 @Api(tags = {"auth-controller"})
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequiredArgsConstructor
 @RestController
 @Slf4j
