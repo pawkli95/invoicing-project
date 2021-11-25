@@ -13,7 +13,7 @@ Application used to manage invoices, where you can add, edit or delete companies
 
 #Demo
 
-![](Demo/Sign up and in.gif)
+![](Demo/Sign_up_and_in.gif)
 ![](Demo/Create company.gif)
 ![](Demo/Create and update invoice.gif)
 ![](Demo/Tax report, delete invoices and companies.gif)
