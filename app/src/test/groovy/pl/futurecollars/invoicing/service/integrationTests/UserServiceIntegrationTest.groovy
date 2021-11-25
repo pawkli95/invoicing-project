@@ -1,11 +1,10 @@
 package pl.futurecollars.invoicing.service.integrationTests
 
-import org.junit.Ignore
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.users.UserRepository
+import pl.futurecollars.invoicing.repository.UserRepository
 import pl.futurecollars.invoicing.dto.UserDto
 import pl.futurecollars.invoicing.dto.mappers.UserMapper
 import pl.futurecollars.invoicing.exceptions.ConstraintException
@@ -18,7 +17,6 @@ import javax.transaction.Transactional
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
 class UserServiceIntegrationTest extends Specification {
 
     @Autowired

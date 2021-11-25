@@ -1,16 +1,18 @@
 package pl.futurecollars.invoicing.service.integrationTests
 
+import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-
-import pl.futurecollars.invoicing.db.companies.CompanyRepository
+import pl.futurecollars.invoicing.repository.CompanyRepository
 import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.mappers.CompanyMapper
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.model.Company
 import pl.futurecollars.invoicing.service.CompanyService
 import spock.lang.Specification
+
+import javax.transaction.Transactional
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -20,10 +22,9 @@ class CompanyServiceIntegrationTest extends Specification{
     CompanyService companyService
 
     @Autowired
-    CompanyRepository companyDatabase
+    CompanyRepository companyRepository
 
-    @Autowired
-    CompanyMapper companyMapper
+    CompanyMapper companyMapper = Mappers.getMapper(CompanyMapper.class)
 
     CompanyDto companyDto = CompanyFixture.getCompanyDto()
 
@@ -36,7 +37,7 @@ class CompanyServiceIntegrationTest extends Specification{
         CompanyDto returnedCompanyDto = companyService.saveCompany(companyDto)
 
         then:
-        def company = companyDatabase.getById(returnedCompanyDto.getId())
+        def company = companyRepository.getById(returnedCompanyDto.getId())
         companyMapper.toDto(company) == returnedCompanyDto
     }
 
@@ -125,16 +126,15 @@ class CompanyServiceIntegrationTest extends Specification{
     }
 
     def clearDatabase() {
-        for(Company c : companyDatabase.getAll()) {
-            companyDatabase.delete(c.getId())
-        }
+        companyRepository.deleteAll()
     }
 
     def List<CompanyDto> addCompanies(int number) {
         List<CompanyDto> list = new ArrayList<>();
         for(int i = 0; i < number; i++) {
-            CompanyDto companyDto1 = CompanyFixture.getCompanyDto()
-            list.add(companyService.saveCompany(companyDto1))
+            Company company = CompanyFixture.getCompany()
+            Company returnedCompany = companyRepository.save(company)
+            list.add(companyMapper.toDto(returnedCompany))
         }
         return list
     }

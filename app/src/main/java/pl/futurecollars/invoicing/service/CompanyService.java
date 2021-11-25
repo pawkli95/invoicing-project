@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.repository.CompanyRepository;
 import pl.futurecollars.invoicing.dto.CompanyDto;
 import pl.futurecollars.invoicing.dto.mappers.CompanyMapper;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.model.Company;
+import pl.futurecollars.invoicing.repository.CompanyRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
 
     public CompanyDto saveCompany(CompanyDto companyDto) {
-        if(companyRepository.existsByTaxIdentificationNumber(companyDto.getTaxIdentificationNumber())) {
+        if (companyRepository.existsByTaxIdentificationNumber(companyDto.getTaxIdentificationNumber())) {
             throw new ConstraintException("This tax identification number is already in use");
         }
         Company company = companyMapper.toEntity(companyDto);
@@ -30,7 +30,7 @@ public class CompanyService {
     }
 
     public CompanyDto getById(UUID id) throws NoSuchElementException {
-        if(!companyRepository.existsById(id)) {
+        if (!companyRepository.existsById(id)) {
             throw new NoSuchElementException("Company doesn't exist");
         }
         Company company = companyRepository.getById(id);
@@ -38,7 +38,7 @@ public class CompanyService {
     }
 
     public void delete(UUID id) throws NoSuchElementException, ConstraintException {
-        if(!companyRepository.existsById(id)) {
+        if (!companyRepository.existsById(id)) {
             throw new NoSuchElementException("Company doesn't exist");
         }
         try {
@@ -54,7 +54,7 @@ public class CompanyService {
     }
 
     public CompanyDto update(CompanyDto companyDto) {
-        if(!companyRepository.existsById(companyDto.getId())) {
+        if (!companyRepository.existsById(companyDto.getId())) {
             throw new NoSuchElementException("Company doesn't exist");
         }
         Company company = companyMapper.toEntity(companyDto);

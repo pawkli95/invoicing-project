@@ -10,12 +10,12 @@ import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.repository.CompanyRepository;
-import pl.futurecollars.invoicing.repository.InvoiceRepository;
 import pl.futurecollars.invoicing.dto.TaxCalculation;
 import pl.futurecollars.invoicing.model.Company;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
+import pl.futurecollars.invoicing.repository.CompanyRepository;
+import pl.futurecollars.invoicing.repository.InvoiceRepository;
 
 @Slf4j
 @Service
@@ -50,7 +50,6 @@ public class TaxCalculatorService {
                 .finalIncomeTaxValue(finalIncomeTaxValue(company))
                 .build();
     }
-
 
     private BigDecimal calculate(Predicate<Invoice> predicate, Function<InvoiceEntry, BigDecimal> calculationFunction) {
         return invoiceRepository.findAll().stream()

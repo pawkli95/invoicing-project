@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 public class DatabaseConfiguration {
 
-    }
+}
 
 

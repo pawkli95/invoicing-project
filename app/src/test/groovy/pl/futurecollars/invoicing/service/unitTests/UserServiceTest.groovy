@@ -1,10 +1,9 @@
 package pl.futurecollars.invoicing.service.unitTests
 
 import org.mapstruct.factory.Mappers
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import pl.futurecollars.invoicing.db.roles.RolesRepository
-import pl.futurecollars.invoicing.db.users.UserRepository
+import pl.futurecollars.invoicing.repository.RolesRepository
+import pl.futurecollars.invoicing.repository.UserRepository
 import pl.futurecollars.invoicing.dto.UserDto
 import pl.futurecollars.invoicing.dto.mappers.UserMapper
 import pl.futurecollars.invoicing.exceptions.ConstraintException
@@ -64,6 +63,7 @@ class UserServiceTest extends Specification{
 
     def "should map entity to dto and return userDto by id"() {
         given:
+        userRepository.existsById(user.getId()) >> true
         userRepository.getById(user.getId()) >> user
 
         when:
@@ -86,6 +86,7 @@ class UserServiceTest extends Specification{
 
     def "should delete user"() {
         when:
+        userRepository.existsById(userDto.getId()) >> true
         userService.deleteUser(userDto.getId())
 
         then:

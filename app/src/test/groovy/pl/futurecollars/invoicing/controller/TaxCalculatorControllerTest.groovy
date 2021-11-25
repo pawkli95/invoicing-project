@@ -1,5 +1,7 @@
 package pl.futurecollars.invoicing.controller
 
+import com.sun.istack.logging.Logger
+import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -15,6 +17,8 @@ import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.dto.TaxCalculation
+import pl.futurecollars.invoicing.repository.CompanyRepository
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
@@ -30,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = "USER")
 class TaxCalculatorControllerTest extends Specification {
 
+    Logger logger = Logger.getLogger(TaxCalculatorControllerTest.class)
+
     @Subject.Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")
             .withDatabaseName("test")
@@ -43,6 +49,12 @@ class TaxCalculatorControllerTest extends Specification {
 
     @Autowired
     MockMvc mockMvc
+
+    @Autowired
+    InvoiceRepository invoiceRepository
+
+    @Autowired
+    CompanyRepository companyRepository
 
     @Autowired
     JacksonTester<InvoiceDto> invoiceJsonService
@@ -62,9 +74,12 @@ class TaxCalculatorControllerTest extends Specification {
     @Shared
     CompanyDto company1 = CompanyFixture.getCompanyDto()
 
+    def setup() {
+        clearDatabase()
+    }
+
     def "should calculate tax without personal car expenses"() {
         given:
-        clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
         when:
@@ -95,7 +110,6 @@ class TaxCalculatorControllerTest extends Specification {
 
     def "should calculate tax with personal car expenses"() {
         given:
-        deleteInvoices()
         addInvoicesWithPersonalCarEntries()
 
         when:
@@ -127,7 +141,6 @@ class TaxCalculatorControllerTest extends Specification {
 
     def "should return 404 NotFound http status when tax id doesn't exist"() {
         given:
-        clearDatabase()
         String invalidTaxId = "1234567890"
 
         expect:
@@ -138,6 +151,7 @@ class TaxCalculatorControllerTest extends Specification {
 
     void addInvoicesWithPersonalCarEntries() {
         CompanyDto company2 = CompanyFixture.getCompanyDto()
+        logger.info(company1.getTaxIdentificationNumber())
         company1 = addCompany(company1)
         company2 = addCompany(company2)
         InvoiceDto invoice1 = new InvoiceDto(UUID.randomUUID(), "number1", LocalDate.now(), company1, company2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
@@ -183,37 +197,10 @@ class TaxCalculatorControllerTest extends Specification {
     }
 
     void deleteInvoices() {
-        def response = mockMvc
-                .perform(get("/api/invoices"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        List<InvoiceDto> list = invoiceListJsonService.parseObject(response)
-        for(InvoiceDto i : list) {
-            deleteInvoice(i.getId())
-        }
-    }
-
-    void deleteInvoice(UUID id) {
-        mockMvc
-                .perform(delete("/api/invoices/" + id.toString()))
+       invoiceRepository.deleteAll()
     }
 
     void deleteCompanies() {
-        def response = mockMvc
-                .perform(get("/api/companies"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        List<CompanyDto> list = companyListJsonService.parseObject(response)
-        for(CompanyDto c : list) {
-            deleteCompany(c.getId())
-        }
+        companyRepository.deleteAll()
     }
-
-    void deleteCompany(UUID id) {
-        mockMvc.perform(delete("/api/companies/" + id.toString()))
-    }
-
-
 }

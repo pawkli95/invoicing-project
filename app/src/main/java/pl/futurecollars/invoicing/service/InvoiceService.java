@@ -9,13 +9,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.repository.InvoiceRepository;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.helpers.FilterParameters;
 import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
+import pl.futurecollars.invoicing.repository.InvoiceRepository;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +25,7 @@ public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
 
     public InvoiceDto saveInvoice(InvoiceDto invoiceDto) {
-        if(invoiceRepository.existsByNumber(invoiceDto.getNumber())) {
+        if (invoiceRepository.existsByNumber(invoiceDto.getNumber())) {
             throw new ConstraintException("This number is already in use");
         }
         invoiceDto.setDate(LocalDate.now());
@@ -35,7 +35,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto getById(UUID id) throws NoSuchElementException {
-        if(!invoiceRepository.existsById(id)) {
+        if (!invoiceRepository.existsById(id)) {
             throw new NoSuchElementException("Invoice doesn't exist");
         }
         return invoiceMapper.toDto(invoiceRepository.getById(id));
@@ -56,7 +56,7 @@ public class InvoiceService {
     }
 
     public InvoiceDto updateInvoice(InvoiceDto updatedInvoice) throws NoSuchElementException {
-        if(!invoiceRepository.existsById(updatedInvoice.getId())) {
+        if (!invoiceRepository.existsById(updatedInvoice.getId())) {
             throw new NoSuchElementException("Invoice doesn't exist");
         }
         Invoice returnedInvoice = invoiceRepository.save(invoiceMapper.toEntity(updatedInvoice));
@@ -64,7 +64,7 @@ public class InvoiceService {
     }
 
     public void deleteInvoice(UUID id) throws NoSuchElementException {
-        if(!invoiceRepository.existsById(id)) {
+        if (!invoiceRepository.existsById(id)) {
             throw new NoSuchElementException("Invoice doesn't exist");
         }
         invoiceRepository.deleteById(id);
@@ -72,17 +72,17 @@ public class InvoiceService {
 
     private Predicate<Invoice> createPredicate(FilterParameters filterParameters) {
         Predicate<Invoice> predicate = Objects::nonNull;
-        if(filterParameters.getAfterDate().isPresent()) {
+        if (filterParameters.getAfterDate().isPresent()) {
             predicate = predicate.and(invoice -> invoice.getDate().isAfter(filterParameters.getAfterDate().get()));
         }
-        if(filterParameters.getBeforeDate().isPresent()) {
+        if (filterParameters.getBeforeDate().isPresent()) {
             predicate = predicate.and(invoice -> invoice.getDate().isBefore(filterParameters.getBeforeDate().get()));
         }
-        if(filterParameters.getSellerTaxId().isPresent()) {
+        if (filterParameters.getSellerTaxId().isPresent()) {
             predicate = predicate.and(invoice -> invoice.getSeller().getTaxIdentificationNumber()
                     .equals(filterParameters.getSellerTaxId().get()));
         }
-        if(filterParameters.getBuyerTaxId().isPresent()) {
+        if (filterParameters.getBuyerTaxId().isPresent()) {
             predicate = predicate.and(invoice -> invoice.getBuyer().getTaxIdentificationNumber()
                     .equals(filterParameters.getBuyerTaxId().get()));
         }
