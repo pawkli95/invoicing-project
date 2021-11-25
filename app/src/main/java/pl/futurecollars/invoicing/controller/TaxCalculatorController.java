@@ -18,7 +18,7 @@ import pl.futurecollars.invoicing.service.TaxCalculatorService;
 @RestController
 @RequestMapping("/api/tax")
 @AllArgsConstructor
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 public class TaxCalculatorController {
 
     private final TaxCalculatorService taxCalculatorService;

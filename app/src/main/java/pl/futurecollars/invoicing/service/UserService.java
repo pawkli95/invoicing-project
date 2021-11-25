@@ -2,13 +2,14 @@ package pl.futurecollars.invoicing.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.futurecollars.invoicing.db.roles.RolesRepository;
-import pl.futurecollars.invoicing.db.users.UserRepository;
+import pl.futurecollars.invoicing.repository.RolesRepository;
+import pl.futurecollars.invoicing.repository.UserRepository;
 import pl.futurecollars.invoicing.dto.UserDto;
 import pl.futurecollars.invoicing.dto.mappers.UserMapper;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
@@ -35,6 +36,9 @@ public class UserService {
     }
 
     public UserDto getUser(UUID id) {
+        if(!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User doesn't exist");
+        }
         User user = userRepository.getById(id);
         return userMapper.toDto(user);
     }
@@ -46,6 +50,9 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
+        if(!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User doesn't exist");
+        }
         userRepository.deleteById(id);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,7 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.futurecollars.invoicing.db.users.UserRepository;
+import pl.futurecollars.invoicing.repository.UserRepository;
 import pl.futurecollars.invoicing.model.Role;
 
 @EnableJpaRepositories(basePackages = "pl.futurecollars.invoicing.db.users")
@@ -39,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/api/users/register").permitAll()
                 .antMatchers("/api/users/roles").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/").hasAuthority(Role.ADMIN)
+                .antMatchers(HttpMethod.GET, "/api/users").hasAuthority(Role.ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority(Role.ADMIN)
                 .antMatchers("/api/invoices/**").hasAuthority(Role.USER)
                 .antMatchers("/api/companies/**").hasAuthority(Role.USER)
