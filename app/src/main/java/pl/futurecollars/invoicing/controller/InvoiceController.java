@@ -46,7 +46,7 @@ public class InvoiceController {
     @PostMapping
     public ResponseEntity<InvoiceDto> saveInvoice(@RequestBody @Valid InvoiceDto invoice) throws ConstraintException {
         log.debug("Request to save invoice");
-        return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.saveInvoice(invoice));
+        return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.save(invoice));
     }
 
     @ApiOperation(value = "Get invoices based on parameters")
@@ -79,14 +79,14 @@ public class InvoiceController {
     public ResponseEntity<InvoiceDto> update(@RequestBody @Valid InvoiceDto updatedInvoice) throws NoSuchElementException {
         log.debug("Request to update invoice");
         updatedInvoice.getInvoiceEntries().forEach(InvoiceEntry::calculateVatValue);
-        return ResponseEntity.ok().body(invoiceService.updateInvoice(updatedInvoice));
+        return ResponseEntity.ok().body(invoiceService.update(updatedInvoice));
     }
 
     @ApiOperation(value = "Delete invoice")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) throws NoSuchElementException, ConstraintException {
         log.debug("Request to delete invoice with id: " + id.toString());
-        invoiceService.deleteInvoice(id);
+        invoiceService.delete(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

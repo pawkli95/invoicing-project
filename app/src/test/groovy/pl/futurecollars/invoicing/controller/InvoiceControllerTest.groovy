@@ -10,12 +10,17 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.testcontainers.containers.PostgreSQLContainer
+import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.InvoiceDto
+import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
+import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
+import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.model.InvoiceEntry
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import spock.lang.Specification
 import spock.lang.Subject
-
+import java.util.stream.Collectors
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -41,10 +46,16 @@ class InvoiceControllerTest extends Specification{
     MockMvc mockMvc
 
     @Autowired
+    InvoiceRepository invoiceRepository
+
+    @Autowired
     JacksonTester<InvoiceDto> jsonService
 
     @Autowired
     JacksonTester<List<InvoiceDto>> jsonListService
+
+    @Autowired
+    InvoiceMapper invoiceMapper
 
     InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
 
@@ -87,6 +98,21 @@ class InvoiceControllerTest extends Specification{
 
         then:
         responseDto == invoiceDto
+    }
+
+    def "should return 400 Bad Request if number is already in use"() {
+        given:
+        InvoiceDto returnedInvoiceDto = addInvoices(1).get(0)
+        InvoiceDto invoiceToSave = InvoiceFixture.getInvoiceDto(1)
+        invoiceToSave.setNumber(returnedInvoiceDto.getNumber())
+        String jsonString = jsonService.write(invoiceToSave).getJson()
+
+        expect:
+        def response = mockMvc
+                .perform(post("/api/invoices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonString))
+                .andExpect(status().isBadRequest())
     }
 
     def "should return list of all invoices"() {
@@ -132,16 +158,10 @@ class InvoiceControllerTest extends Specification{
         given:
         UUID invalidId = UUID.randomUUID()
 
-        when:
-        def response = mockMvc
+        expect:
+        mockMvc
                 .perform(get("/api/invoices/" + invalidId.toString()))
                 .andExpect(status().isNotFound())
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-
-        then:
-        response.isEmpty()
     }
 
     def "should update invoice"() {
@@ -239,12 +259,10 @@ class InvoiceControllerTest extends Specification{
         then:
         def filteredInvoices = jsonListService.parseObject(response)
         filteredInvoices.size() == 1
-        filteredInvoices[0].getInvoiceEntries().sort(comparator)
-        invoice.getInvoiceEntries().sort(comparator)
         filteredInvoices[0] == invoice
     }
 
-    def "should filter invoices by buyerId"() {
+    def "should filter invoices by buyerTaxId"() {
         given:
         def invoices = addInvoices(10)
         def invoice = invoices[0]
@@ -263,8 +281,6 @@ class InvoiceControllerTest extends Specification{
         then:
         def filteredInvoices = jsonListService.parseObject(response)
         filteredInvoices.size() == 1
-        filteredInvoices[0].getInvoiceEntries().sort(comparator)
-        invoice.getInvoiceEntries().sort(comparator)
         filteredInvoices[0] == invoice
     }
 
@@ -298,43 +314,25 @@ class InvoiceControllerTest extends Specification{
     private List<InvoiceDto> addInvoices(int number) {
         List<InvoiceDto> invoiceList = new ArrayList<>()
         for(int i = 0; i < number; i++) {
-            InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
-            String jsonString = jsonService.write(invoiceDto).getJson()
-            def response = mockMvc.perform(post("/api/invoices").contentType(MediaType.APPLICATION_JSON).content(jsonString))
-            .andReturn().getResponse().getContentAsString()
-            InvoiceDto invoiceDtoResponse = jsonService.parseObject(response)
-            invoiceList.add(invoiceDtoResponse)
+           Invoice invoice = InvoiceFixture.getInvoice(1)
+            Invoice returnedInvoice = invoiceRepository.save(invoice)
+            invoiceList.add(invoiceMapper.toDto(returnedInvoice))
         }
         return invoiceList
     }
 
     private List<InvoiceDto> getAllInvoices() {
-        def list = mockMvc
-                .perform(get("/api/invoices"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        return jsonListService.parseObject(list)
-    }
-
-    private void deleteInvoice(UUID id) {
-        mockMvc.perform(delete("/api/invoices/" + id.toString()))
+        return invoiceRepository.findAll()
+                .stream()
+                .map(i -> invoiceMapper.toDto(i))
+                .collect(Collectors.toList())
     }
 
     private void deleteAllInvoices() {
-        List<InvoiceDto> invoiceList = getAllInvoices()
-        for(InvoiceDto invoice : invoiceList) {
-            UUID id = invoice.getId()
-            deleteInvoice(id)
-        }
+        invoiceRepository.deleteAll()
     }
 
     private InvoiceDto getInvoiceById(UUID id) {
-        def response = mockMvc
-                .perform(get("/api/invoices/" + id.toString()))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        return jsonService.parseObject(response)
+        return invoiceMapper.toDto(invoiceRepository.findById(id).get())
     }
 }

@@ -74,6 +74,21 @@ class CompanyControllerTest extends Specification {
         company.getName() == companyDto.getName()
     }
 
+    def "should return 400 Bad Request if tax id is already in use"() {
+        given:
+        CompanyDto returnedCompany = addCompany()
+        CompanyDto companyToSave = CompanyFixture.getCompanyDto()
+        companyToSave.setTaxIdentificationNumber(returnedCompany.getTaxIdentificationNumber())
+        String jsonString = jsonService.write(companyToSave).getJson()
+
+        expect:
+        def response = mockMvc
+                .perform(post("/api/companies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonString))
+                .andExpect(status().isBadRequest())
+    }
+
     def "should return company by id"() {
         given:
         def returnedCompaniesDto = addCompanies(5)
@@ -136,6 +151,18 @@ class CompanyControllerTest extends Specification {
 
         then:
         jsonService.parseObject(response) == updatedCompany
+    }
+
+    def "should return 404 NotFound status when updating company which doesn't exist"() {
+        given:
+        String jsonString = jsonService.write(companyDto).getJson()
+
+        expect:
+        mockMvc
+                .perform(put("/api/companies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonString))
+                .andExpect(status().isNotFound())
     }
 
     def "should delete company"() {

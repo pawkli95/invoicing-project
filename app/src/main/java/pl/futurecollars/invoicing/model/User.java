@@ -41,18 +41,22 @@ public class User implements UserDetails {
     @Email
     private String username;
 
+    @Column(nullable = false)
     @ApiModelProperty(value = "Password", required = true)
     @NotNull
     private String password;
 
+    @Column(nullable = false)
     @ApiModelProperty(value = "First Name", required = true)
     @NotNull
     private String firstName;
 
+    @Column(nullable = false)
     @ApiModelProperty(value = "Last Name", required = true)
     @NotNull
     private String lastName;
 
+    @Column(nullable = false)
     @ApiModelProperty(value = "Registration date", required = true)
     @NotNull
     private LocalDate registrationDate;

@@ -33,25 +33,25 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody UserDto user) {
         log.info("Registered user" + user.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
     @ApiOperation(value = "Get all users")
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAll());
     }
 
     @ApiOperation(value = "Delete user by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        userService.deleteUser(id);
+        userService.delete(id);
         return ResponseEntity.accepted().build();
     }
 
     @ApiOperation(value = "Get user by id")
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(userService.getUser(id));
+        return ResponseEntity.ok().body(userService.getById(id));
     }
 }

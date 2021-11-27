@@ -67,6 +67,21 @@ class UserControllerTest extends Specification {
         responseUserDto.getFirstName() == responseUserDto.getFirstName()
     }
 
+    def "should return 400 Bad Request when username is already in use"() {
+        given:
+        User user = addUser()
+        userDto.setUsername(user.getUsername())
+        String jsonString = userDtoJacksonTester.write(userDto).getJson()
+
+        expect:
+        def response = mockMvc
+                .perform(post("/api/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonString))
+                .andExpect(status().isBadRequest())
+
+    }
+
     @WithMockUser(authorities = "ADMIN")
     def "should get all users if user has role admin"() {
         given:
@@ -108,6 +123,18 @@ class UserControllerTest extends Specification {
         getAll().size() == 0
     }
 
+    @WithMockUser(authorities = "ADMIN")
+    def "should return 404 Not Found when deleting by id nonexistent user"() {
+        given:
+        UUID id = UUID.randomUUID()
+
+        expect:
+        mockMvc
+                .perform(delete("/api/users/" + id.toString()))
+                .andExpect(status().isNotFound())
+
+    }
+
     @WithMockUser(authorities = "USER")
     def "should return 403 Forbidden when deleting user if user hasn't got admin role"() {
         expect:
@@ -132,6 +159,18 @@ class UserControllerTest extends Specification {
         UserDto responseUserDto = userDtoJacksonTester.parseObject(response)
         user.setRole(responseUserDto.getRole())
         userMapper.toDto(user) == responseUserDto
+    }
+
+    @WithMockUser(authorities = "USER")
+    def "should return 404 Not Found when getting by id nonexistent user"() {
+        given:
+        UUID id = UUID.randomUUID()
+
+        expect:
+        mockMvc
+                .perform(get("/api/users/" + id.toString()))
+                .andExpect(status().isNotFound())
+
     }
 
 

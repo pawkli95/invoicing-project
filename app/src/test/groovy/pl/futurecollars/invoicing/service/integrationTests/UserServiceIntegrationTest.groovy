@@ -14,8 +14,6 @@ import pl.futurecollars.invoicing.model.User
 import pl.futurecollars.invoicing.service.UserService
 import spock.lang.Specification
 
-import javax.transaction.Transactional
-
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -39,7 +37,7 @@ class UserServiceIntegrationTest extends Specification {
 
     def "should register user"() {
         when:
-        userService.saveUser(userDto)
+        userService.save(userDto)
 
         then:
         userRepository.findAll().size() == 1
@@ -50,18 +48,19 @@ class UserServiceIntegrationTest extends Specification {
         User returnedUser = userRepository.save(user)
 
         when:
-        UserDto response = userService.getUser(returnedUser.getId())
+        UserDto response = userService.getById(returnedUser.getId())
 
         then:
+        returnedUser.setRole(response.getRole())
         response == userMapper.toDto(returnedUser)
     }
 
     def "should throw ConstraintException when username already exists"() {
         given:
-        userService.saveUser(userDto)
+        userService.save(userDto)
 
         when:
-        userService.saveUser(userDto)
+        userService.save(userDto)
 
         then:
         thrown(ConstraintException)
@@ -72,7 +71,7 @@ class UserServiceIntegrationTest extends Specification {
         userRepository.save(user)
 
         when:
-        def list = userService.getUsers()
+        def list = userService.getAll()
 
         then:
         list.size() == 1
@@ -83,10 +82,10 @@ class UserServiceIntegrationTest extends Specification {
         User returnedUser = userRepository.save(user)
 
         when:
-        userService.deleteUser(returnedUser.getId())
+        userService.delete(returnedUser.getId())
 
         then:
-        userService.getUsers().size() == 0
+        userService.getAll().size() == 0
     }
 
 

@@ -33,7 +33,7 @@ public class CompanyController {
     @ApiOperation(value = "Add new company")
     @PostMapping
     public ResponseEntity<CompanyDto> save(@RequestBody @Valid CompanyDto companyDto) throws ConstraintException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.saveCompany(companyDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.save(companyDto));
     }
 
     @ApiOperation(value = "Get list of all companies")

@@ -1,10 +1,9 @@
 package pl.futurecollars.invoicing.service.unitTests
 
 import org.mapstruct.factory.Mappers
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import pl.futurecollars.invoicing.db.roles.RolesRepository
-import pl.futurecollars.invoicing.db.users.UserRepository
+import pl.futurecollars.invoicing.repository.RolesRepository
+import pl.futurecollars.invoicing.repository.UserRepository
 import pl.futurecollars.invoicing.dto.UserDto
 import pl.futurecollars.invoicing.dto.mappers.UserMapper
 import pl.futurecollars.invoicing.exceptions.ConstraintException
@@ -40,12 +39,12 @@ class UserServiceTest extends Specification{
     def "calling saveUser() should map dto to entity and delegate to repository save()"() {
         given:
         Role userRole = new Role("USER")
-        rolesRepository.findByAuthority("USER") >> userRole
+        rolesRepository.findAll() >> List.of(userRole)
         passwordEncoder.encode(userDto.getPassword()) >> "pass"
         userDto.setRole(userRole)
 
         when:
-        userService.saveUser(userDto)
+        userService.save(userDto)
 
         then:
         1 * userRepository.save(userMapper.toEntity(userDto))
@@ -56,18 +55,30 @@ class UserServiceTest extends Specification{
         userRepository.existsByUsername(user.getUsername()) >> true
 
         when:
-        userService.saveUser(userDto)
+        userService.save(userDto)
 
         then:
         thrown(ConstraintException)
     }
 
-    def "should map entity to dto and return userDto by id"() {
+    def "should throw NoSuchElementException when getting user by id if user doesn't exist"() {
         given:
-        userRepository.getById(user.getId()) >> user
+        UUID id = UUID.randomUUID()
+        userRepository.findById(id) >> Optional.ofNullable(null)
 
         when:
-        def userResponse = userService.getUser(userDto.getId())
+        userService.getById(id)
+
+        then:
+        thrown(NoSuchElementException)
+    }
+
+    def "should map entity to dto and return userDto by id"() {
+        given:
+        userRepository.findById(user.getId()) >> Optional.of(user)
+
+        when:
+        def userResponse = userService.getById(userDto.getId())
 
         then:
         userResponse == userDto
@@ -78,7 +89,7 @@ class UserServiceTest extends Specification{
         userRepository.findAll() >> [user]
 
         when:
-        def list = userService.getUsers()
+        def list = userService.getAll()
 
         then:
         list == [userDto]
@@ -86,9 +97,22 @@ class UserServiceTest extends Specification{
 
     def "should delete user"() {
         when:
-        userService.deleteUser(userDto.getId())
+        userRepository.existsById(userDto.getId()) >> true
+        userService.delete(userDto.getId())
 
         then:
         userRepository.deleteById(user.getId())
+    }
+
+    def "should throw NoSuchElementException when deleting user by id if user doesn't exist"() {
+        given:
+        UUID id = UUID.randomUUID()
+        userRepository.existsById(id) >> false
+
+        when:
+        userService.delete(id)
+
+        then:
+        thrown(NoSuchElementException)
     }
 }

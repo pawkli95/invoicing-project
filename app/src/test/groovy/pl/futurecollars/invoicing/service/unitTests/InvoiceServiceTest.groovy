@@ -13,29 +13,28 @@ import spock.lang.Specification
 
 class InvoiceServiceTest extends Specification {
 
-    InvoiceRepository database;
+    InvoiceRepository invoiceRepository;
     InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
     InvoiceService invoiceService
     InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
 
     def setup() {
-        database = Mock()
-        invoiceService = new InvoiceService(database, invoiceMapper)
+        invoiceRepository = Mock()
+        invoiceService = new InvoiceService(invoiceRepository, invoiceMapper)
     }
 
     def "calling saveInvoice() should map dto to entity and delegate to database save()"() {
         when: "we ask invoice service to save invoice"
-        invoiceService.saveInvoice(invoiceDto)
+        invoiceService.save(invoiceDto)
 
         then: "database save() is called"
-        1 * database.save(invoiceMapper.toEntity(invoiceDto))
+        1 * invoiceRepository.save(invoiceMapper.toEntity(invoiceDto))
     }
 
     def "should get an invoice from database by id and map to dto"() {
         given: "an invoice returned by database"
         Invoice invoice = invoiceMapper.toEntity(invoiceDto)
-        database.getById(invoice.getId()) >> invoice
-        database.existsById(invoice.getId()) >> true
+        invoiceRepository.findById(invoice.getId()) >> Optional.ofNullable(invoice)
 
         when: "we ask invoice service for invoice by id"
         InvoiceDto returnedInvoiceDto = invoiceService.getById(invoiceDto.getId())
@@ -44,9 +43,21 @@ class InvoiceServiceTest extends Specification {
         returnedInvoiceDto == invoiceDto
     }
 
+    def "should throw NoSuchElementException when getting invoice by id if invoice doesn't exist"() {
+        given:
+        UUID id = UUID.randomUUID()
+        invoiceRepository.findById(id) >> Optional.ofNullable(null)
+
+        when:
+        invoiceService.getById(id)
+
+        then:
+        thrown(NoSuchElementException)
+    }
+
     def "calling getAll() should return list of InvoiceDto"() {
         given:
-        database.findAll() >> List.of(invoiceMapper.toEntity(invoiceDto))
+        invoiceRepository.findAll() >> List.of(invoiceMapper.toEntity(invoiceDto))
 
         when: "we ask invoice service for list of all invoices"
         def list = invoiceService.getAll()
@@ -57,31 +68,55 @@ class InvoiceServiceTest extends Specification {
 
     def "calling updateInvoice() should map dto to entity and delegate to database update()"() {
         given:
-        database.existsById(invoiceDto.getId()) >> true
+        invoiceRepository.existsById(invoiceDto.getId()) >> true
 
         when: "we ask invoice service to update invoice"
-        invoiceService.updateInvoice(invoiceDto)
+        invoiceService.update(invoiceDto)
 
         then: "invoice is updated"
-        1 * database.save(invoiceMapper.toEntity(invoiceDto))
+        1 * invoiceRepository.save(invoiceMapper.toEntity(invoiceDto))
+    }
+
+    def "should throw NoSuchElementException when updating invoice if invoice doesn't exist"() {
+        given:
+        UUID id = invoiceDto.getId()
+        invoiceRepository.existsById(id) >> false
+
+        when:
+        invoiceService.update(invoiceDto)
+
+        then:
+        thrown(NoSuchElementException)
     }
 
     def "calling deleteInvoice() should delegate to database delete()"() {
         given:
         UUID id = UUID.randomUUID()
-        database.existsById(id) >> true
+        invoiceRepository.existsById(id) >> true
 
         when: "we ask invoice service to delete invoice"
-        invoiceService.deleteInvoice(id)
+        invoiceService.delete(id)
 
         then: "database delete() is called"
-        1 * database.deleteById(id)
+        1 * invoiceRepository.deleteById(id)
+    }
+
+    def "should throw NoSuchElementException when deleting invoice by id if invoice doesn't exist"() {
+        given:
+        UUID id = UUID.randomUUID()
+        invoiceRepository.existsById(id) >> false
+
+        when:
+        invoiceService.delete(id)
+
+        then:
+        thrown(NoSuchElementException)
     }
 
     def "should filter database"() {
         given: "a list of invoices"
         Invoice invoice = invoiceMapper.toEntity(invoiceDto)
-        database.findAll() >> [invoice]
+        invoiceRepository.findAll() >> [invoice]
         String taxId = invoice.getSeller().getTaxIdentificationNumber()
         FilterParameters filterParameters = FilterParameters.builder().sellerTaxId(taxId).build()
 
