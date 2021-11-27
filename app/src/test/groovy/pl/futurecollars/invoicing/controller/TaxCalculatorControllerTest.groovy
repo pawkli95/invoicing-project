@@ -15,6 +15,8 @@ import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.dto.TaxCalculation
+import pl.futurecollars.invoicing.repository.CompanyRepository
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
@@ -59,12 +61,21 @@ class TaxCalculatorControllerTest extends Specification {
     @Autowired
     JacksonTester<List<CompanyDto>> companyListJsonService
 
+    @Autowired
+    CompanyRepository companyRepository
+
+    @Autowired
+    InvoiceRepository invoiceRepository
+
     @Shared
     CompanyDto company1 = CompanyFixture.getCompanyDto()
 
+    def setup() {
+        clearDatabase()
+    }
+
     def "should calculate tax without personal car expenses"() {
         given:
-        clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
         when:
@@ -95,7 +106,6 @@ class TaxCalculatorControllerTest extends Specification {
 
     def "should calculate tax with personal car expenses"() {
         given:
-        deleteInvoices()
         addInvoicesWithPersonalCarEntries()
 
         when:
@@ -127,7 +137,6 @@ class TaxCalculatorControllerTest extends Specification {
 
     def "should return 404 NotFound http status when tax id doesn't exist"() {
         given:
-        clearDatabase()
         String invalidTaxId = "1234567890"
 
         expect:
@@ -183,37 +192,10 @@ class TaxCalculatorControllerTest extends Specification {
     }
 
     void deleteInvoices() {
-        def response = mockMvc
-                .perform(get("/api/invoices"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        List<InvoiceDto> list = invoiceListJsonService.parseObject(response)
-        for(InvoiceDto i : list) {
-            deleteInvoice(i.getId())
-        }
-    }
-
-    void deleteInvoice(UUID id) {
-        mockMvc
-                .perform(delete("/api/invoices/" + id.toString()))
+        invoiceRepository.deleteAll()
     }
 
     void deleteCompanies() {
-        def response = mockMvc
-                .perform(get("/api/companies"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        List<CompanyDto> list = companyListJsonService.parseObject(response)
-        for(CompanyDto c : list) {
-            deleteCompany(c.getId())
-        }
+        companyRepository.deleteAll()
     }
-
-    void deleteCompany(UUID id) {
-        mockMvc.perform(delete("/api/companies/" + id.toString()))
-    }
-
-
 }

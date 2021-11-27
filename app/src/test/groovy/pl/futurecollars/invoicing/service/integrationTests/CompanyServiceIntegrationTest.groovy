@@ -22,7 +22,8 @@ class CompanyServiceIntegrationTest extends Specification{
     @Autowired
     CompanyRepository companyRepository
 
-    CompanyMapper companyMapper = Mappers.getMapper(CompanyMapper.class)
+    @Autowired
+    CompanyMapper companyMapper
 
     CompanyDto companyDto = CompanyFixture.getCompanyDto()
 

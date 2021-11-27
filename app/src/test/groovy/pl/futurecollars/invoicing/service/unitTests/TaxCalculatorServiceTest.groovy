@@ -1,8 +1,8 @@
 package pl.futurecollars.invoicing.service.unitTests
 
 
-import pl.futurecollars.invoicing.db.companies.CompanyRepository
-import pl.futurecollars.invoicing.db.invoices.InvoiceRepository
+import pl.futurecollars.invoicing.repository.CompanyRepository
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.model.Company

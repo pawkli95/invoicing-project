@@ -1,15 +1,12 @@
 package pl.futurecollars.invoicing.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Predicate;
 import javax.validation.Valid;
-
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoicing.dto.InvoiceDto;
 import pl.futurecollars.invoicing.exceptions.ConstraintException;
 import pl.futurecollars.invoicing.helpers.FilterParameters;
-import pl.futurecollars.invoicing.model.Invoice;
 import pl.futurecollars.invoicing.model.InvoiceEntry;
 import pl.futurecollars.invoicing.service.InvoiceService;
 

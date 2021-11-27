@@ -1,5 +1,6 @@
 package pl.futurecollars.invoicing.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -14,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

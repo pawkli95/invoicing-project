@@ -24,6 +24,12 @@ Tax report
 Admin
 ![](Demo/demo5.gif)
 
+## How to run
+1. Run command "docker-compose up" in terminal in 'invoicing-project-v2' folder
+2. Start backend application in App class on 'dev' profile
+3. Start frontend application - run command "ng serve" in terminal in 'angular-frontend' folder
+
+
 
 
 

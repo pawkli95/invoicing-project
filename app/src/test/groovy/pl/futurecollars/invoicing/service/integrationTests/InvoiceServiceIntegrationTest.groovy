@@ -4,8 +4,8 @@ import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-
-import pl.futurecollars.invoicing.db.invoices.InvoiceRepository
+import pl.futurecollars.invoicing.exceptions.ConstraintException
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
@@ -29,7 +29,8 @@ class InvoiceServiceIntegrationTest extends Specification {
 
     InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
 
-    InvoiceMapper invoiceMapper = Mappers.getMapper(InvoiceMapper.class)
+    @Autowired
+    InvoiceMapper invoiceMapper
 
     def setup() {
         clearDatabase()
@@ -45,6 +46,19 @@ class InvoiceServiceIntegrationTest extends Specification {
         responseDto == returnedInvoiceDto
     }
 
+    def "should throw ConstraintException when number is already in use"() {
+        given:
+        Invoice invoice = addInvoice()
+        invoiceDto.setNumber(invoice.getNumber())
+
+        when:
+        invoiceService.save(invoiceDto)
+
+        then:
+        thrown(ConstraintException)
+
+    }
+
     def "should get invoice by id from database"() {
         given: "invoice saved to database"
         Invoice invoice = invoiceMapper.toEntity(invoiceDto)
@@ -58,7 +72,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         returnedInvoiceDto == responseDto
     }
 
-    def "should throw exception when id is not used"() {
+    def "should throw NoSuchElementException when getting nonexistent invoice"() {
         when: "we ask invoice service to get nonexistent invoice"
         invoiceService.getById(UUID.randomUUID())
 
@@ -116,7 +130,7 @@ class InvoiceServiceIntegrationTest extends Specification {
             responseDto == returnedInvoiceDto
         }
 
-        def "should throw exception when updating nonexistent invoice"() {
+        def "should throw NoSuchElementException when updating nonexistent invoice"() {
             when: "we ask invoice service to update nonexistent invoice"
             invoiceService.update(invoiceDto)
 
@@ -136,7 +150,7 @@ class InvoiceServiceIntegrationTest extends Specification {
             invoiceRepository.findAll().isEmpty()
         }
 
-        def "should throw exception when deleting nonexistent invoice"() {
+        def "should throw NoSuchElementException when deleting nonexistent invoice"() {
             when: "we ask invoice service to delete nonexistent invoice"
             invoiceService.delete(UUID.randomUUID())
 
@@ -144,10 +158,12 @@ class InvoiceServiceIntegrationTest extends Specification {
             thrown(NoSuchElementException)
         }
 
-        def clearDatabase() {
-            for (Invoice invoice : invoiceRepository.findAll()) {
-                invoiceRepository.deleteById(invoice.getId())
-            }
-        }
+    def clearDatabase() {
+        invoiceRepository.deleteAll()
+    }
+
+    def addInvoice() {
+        return invoiceRepository.save(InvoiceFixture.getInvoice(1))
+    }
 }
 

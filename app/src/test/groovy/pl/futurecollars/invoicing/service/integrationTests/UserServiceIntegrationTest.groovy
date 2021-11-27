@@ -5,7 +5,7 @@ import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.users.UserRepository
+import pl.futurecollars.invoicing.repository.UserRepository
 import pl.futurecollars.invoicing.dto.UserDto
 import pl.futurecollars.invoicing.dto.mappers.UserMapper
 import pl.futurecollars.invoicing.exceptions.ConstraintException
@@ -16,7 +16,6 @@ import spock.lang.Specification
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
 class UserServiceIntegrationTest extends Specification {
 
     @Autowired
@@ -27,9 +26,8 @@ class UserServiceIntegrationTest extends Specification {
 
     UserDto userDto = UserFixture.getUserDto()
 
-    UserMapper userMapper = Mappers.getMapper(UserMapper.class)
-
-    User user = userMapper.toEntity(userDto)
+    @Autowired
+    UserMapper userMapper
 
     def setup() {
         clearDatabase()
@@ -45,6 +43,7 @@ class UserServiceIntegrationTest extends Specification {
 
     def "should get user by id"() {
         given:
+        User user = userMapper.toEntity(userDto)
         User returnedUser = userRepository.save(user)
 
         when:
@@ -66,9 +65,17 @@ class UserServiceIntegrationTest extends Specification {
         thrown(ConstraintException)
     }
 
+    def "should throw NoSuchElementException when getting by id nonexistent user"() {
+        when:
+        userService.getById(UUID.randomUUID())
+
+        then:
+        thrown(NoSuchElementException)
+    }
+
     def "should return list of userDtos"() {
         given:
-        userRepository.save(user)
+        addUser()
 
         when:
         def list = userService.getAll()
@@ -79,7 +86,7 @@ class UserServiceIntegrationTest extends Specification {
 
     def "should delete user by id"() {
         given:
-        User returnedUser = userRepository.save(user)
+        User returnedUser = addUser()
 
         when:
         userService.delete(returnedUser.getId())
@@ -88,9 +95,22 @@ class UserServiceIntegrationTest extends Specification {
         userService.getAll().size() == 0
     }
 
+    def "should throw NoSuchElementException when deleting by id nonexistent user"() {
+        when:
+        userService.delete(UUID.randomUUID())
+
+        then:
+        thrown(NoSuchElementException)
+    }
+
 
 
     def clearDatabase() {
         userRepository.deleteAll()
+    }
+
+    def addUser() {
+        User user = userMapper.toEntity(userDto)
+        return userRepository.save(user)
     }
 }

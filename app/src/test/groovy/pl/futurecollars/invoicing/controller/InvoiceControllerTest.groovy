@@ -10,10 +10,8 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.testcontainers.containers.PostgreSQLContainer
-import pl.futurecollars.invoicing.dto.CompanyDto
 import pl.futurecollars.invoicing.dto.InvoiceDto
 import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
-import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.model.InvoiceEntry
@@ -29,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("testcontainer")
 @WithMockUser(authorities = "USER")
-class InvoiceControllerTest extends Specification{
+class InvoiceControllerTest extends Specification {
 
     @Subject.Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres")

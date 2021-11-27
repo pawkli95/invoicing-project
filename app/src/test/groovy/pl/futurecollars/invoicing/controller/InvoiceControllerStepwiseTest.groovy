@@ -11,14 +11,18 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.testcontainers.containers.PostgreSQLContainer
 import pl.futurecollars.invoicing.dto.InvoiceDto
+import pl.futurecollars.invoicing.dto.mappers.InvoiceMapper
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceFixture
 import pl.futurecollars.invoicing.model.Invoice
 import pl.futurecollars.invoicing.model.InvoiceEntry
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
 import spock.lang.Subject
+
+import java.util.stream.Collectors
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -50,6 +54,12 @@ class InvoiceControllerStepwiseTest extends Specification {
 
     @Autowired
     JacksonTester<List<InvoiceDto>> jsonInvoiceListService
+
+    @Autowired
+    InvoiceRepository invoiceRepository
+
+    @Autowired
+    InvoiceMapper invoiceMapper
 
     @Shared InvoiceDto invoiceDto = InvoiceFixture.getInvoiceDto(1)
     @Shared InvoiceDto updatedInvoiceDto = InvoiceFixture.getInvoiceDto(1)
@@ -133,16 +143,10 @@ class InvoiceControllerStepwiseTest extends Specification {
         given:
         UUID invalidId = UUID.randomUUID()
 
-        when:
+        expect:
         def response = mockMvc
                 .perform(get("/api/invoices/" + invalidId))
                 .andExpect(status().isNotFound())
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-
-        then:
-        response.isEmpty()
     }
 
     def "should filter the database"() {
@@ -211,18 +215,12 @@ class InvoiceControllerStepwiseTest extends Specification {
         InvoiceDto invalidInvoiceDto = InvoiceFixture.getInvoiceDto(1)
         String jsonString = jsonInvoiceService.write(invalidInvoiceDto).getJson()
 
-        when:
+        expect:
         def response = mockMvc
                     .perform(put("/api/invoices")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonString))
                     .andExpect(status().isNotFound())
-                    .andReturn()
-                    .getResponse()
-                    .getContentAsString()
-
-        then:
-        response.isEmpty()
     }
 
     def "should delete invoice by id"() {
@@ -239,30 +237,15 @@ class InvoiceControllerStepwiseTest extends Specification {
                 .perform(delete("/api/invoices/" + id.toString()))
                 .andExpect(status().isNotFound())
 
-        and:
-        mockMvc
-                .perform(get("/api/invoices/" + id.toString()))
-                .andExpect(status().isNotFound())
     }
 
     private List<InvoiceDto> getAllInvoices() {
-        def list = mockMvc
-                .perform(get("/api/invoices"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        return jsonInvoiceListService.parseObject(list)
-    }
-
-    private void deleteInvoice(UUID id) {
-        mockMvc.perform(delete("/api/invoices/" + id.toString()))
+        return invoiceRepository.findAll().stream()
+                .map(invoiceMapper::toDto)
+                .collect(Collectors.toList())
     }
 
     private void deleteAllInvoices() {
-        List<InvoiceDto> invoiceList = getAllInvoices()
-        for(InvoiceDto invoice : invoiceList) {
-            UUID id = invoice.getId()
-            deleteInvoice(id)
-        }
+      invoiceRepository.deleteAll()
     }
 }

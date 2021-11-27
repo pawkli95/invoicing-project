@@ -10,12 +10,14 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.testcontainers.containers.PostgreSQLContainer
-import pl.futurecollars.invoicing.controller.CompanyController
 import pl.futurecollars.invoicing.dto.CompanyDto
+import pl.futurecollars.invoicing.dto.mappers.CompanyMapper
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
+import pl.futurecollars.invoicing.model.Company
+import pl.futurecollars.invoicing.repository.CompanyRepository
 import spock.lang.Specification
 import spock.lang.Subject
-
+import java.util.stream.Collectors
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -42,6 +44,9 @@ class CompanyControllerTest extends Specification {
     @Autowired
     MockMvc mockMvc
 
+    @Autowired
+    CompanyRepository companyRepository
+
     CompanyDto companyDto = CompanyFixture.getCompanyDto()
 
     @Autowired
@@ -49,6 +54,9 @@ class CompanyControllerTest extends Specification {
 
     @Autowired
     JacksonTester<List<CompanyDto>> jsonListService
+
+    @Autowired
+    CompanyMapper companyMapper
 
     def setup() {
         clearDatabase()
@@ -188,22 +196,14 @@ class CompanyControllerTest extends Specification {
     }
 
     def clearDatabase() {
-        for(CompanyDto c : getAllCompanies()) {
-            deleteCompany(c.getId())
-        }
+        companyRepository.deleteAll()
     }
 
     def getAllCompanies() {
-        def list = mockMvc
-                .perform(get("/api/companies"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        return jsonListService.parseObject(list)
-    }
-
-    def deleteCompany(UUID id) {
-        mockMvc.perform(delete("/api/companies/" + id.toString()))
+        return companyRepository.findAll()
+                .stream()
+                .map(companyMapper::toDto)
+                .collect(Collectors.toList())
     }
 
     def List<CompanyDto> addCompanies(int number) {
@@ -216,16 +216,8 @@ class CompanyControllerTest extends Specification {
     }
 
     def CompanyDto addCompany() {
-        CompanyDto c = CompanyFixture.getCompanyDto()
-        String jsonString = jsonService.write(c).getJson()
-        def response = mockMvc
-                .perform(post("/api/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonString))
-                .andReturn()
-                .getResponse()
-                .getContentAsString()
-        return jsonService.parseObject(response)
+        Company company = CompanyFixture.getCompany()
+        return companyMapper.toDto(companyRepository.save(company))
     }
 
 
