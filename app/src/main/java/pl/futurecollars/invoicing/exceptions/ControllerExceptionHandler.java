@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> noSuchElementExceptionHandler(NoSuchElementException e) {
+    public ResponseEntity<NoSuchElementException> noSuchElementExceptionHandler(NoSuchElementException e) {
         log.warn("No such element in database");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
     }
 
     @ExceptionHandler(ConstraintException.class)
