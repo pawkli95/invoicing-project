@@ -1,9 +1,11 @@
-package pl.futurecollars.invoicing.service.taxCalculatorService
+package pl.futurecollars.invoicing.service.integrationTests
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.futurecollars.invoicing.db.Database
+
+import pl.futurecollars.invoicing.repository.CompanyRepository
+import pl.futurecollars.invoicing.repository.InvoiceRepository
 import pl.futurecollars.invoicing.fixtures.CompanyFixture
 import pl.futurecollars.invoicing.fixtures.InvoiceEntryFixture
 import pl.futurecollars.invoicing.model.Company
@@ -19,10 +21,10 @@ import java.time.LocalDate;
 class TaxCalculatorServiceIntegrationTest extends Specification {
 
     @Autowired
-    Database<Invoice> invoiceDatabase
+    InvoiceRepository invoiceRepository
 
     @Autowired
-    Database<Company> companyDatabase
+    CompanyRepository companyRepository
 
     @Autowired
     TaxCalculatorService taxCalculatorService
@@ -30,9 +32,12 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     @Shared
     Company company1 = CompanyFixture.getCompany()
 
+    def setup() {
+        clearDatabase()
+    }
+
     def "should calculate tax without personal car expenses"() {
         given: "database with invoices without personal car entries"
-        clearDatabase()
         addInvoicesWithoutPersonalCarEntries()
 
         when: "we ask taxCalculatorService to calculate taxes"
@@ -57,7 +62,6 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
 
     def "should calculate tax with personal car expenses"() {
         given: "database with invoices with personal car entries"
-        clearDatabase()
         addInvoicesWithPersonalCarEntries()
 
         when: "we ask taxCalculatorService to calculate taxes"
@@ -81,9 +85,6 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     def "should throw NoSuchElementException when tax id is not in database"() {
-        given: "an empty database"
-        clearDatabase()
-
         when:"we ask taxCalculatorService to calculate taxes"
         taxCalculatorService.getTaxCalculation(company1.getTaxIdentificationNumber())
 
@@ -93,22 +94,22 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
 
     void addInvoicesWithPersonalCarEntries() {
         Company company2 = CompanyFixture.getCompany()
-        Company c1 = companyDatabase.save(company1)
-        Company c2 = companyDatabase.save(company2)
+        Company c1 = companyRepository.save(company1)
+        Company c2 = companyRepository.save(company2)
         Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithPersonalCar(4))
-        invoiceDatabase.save(invoice1)
-        invoiceDatabase.save(invoice2)
+        invoiceRepository.save(invoice1)
+        invoiceRepository.save(invoice2)
     }
 
     void addInvoicesWithoutPersonalCarEntries() {
         Company company2 = CompanyFixture.getCompany()
-        Company c1 = companyDatabase.save(company1)
-        Company c2 = companyDatabase.save(company2)
+        Company c1 = companyRepository.save(company1)
+        Company c2 = companyRepository.save(company2)
         Invoice invoice1 = new Invoice(UUID.randomUUID(), "number1", LocalDate.now(), c1, c2, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(6))
         Invoice invoice2 = new Invoice(UUID.randomUUID(), "number2", LocalDate.now(), c2, c1, InvoiceEntryFixture.getInvoiceEntryListWithoutPersonalCar(4))
-        invoiceDatabase.save(invoice1)
-        invoiceDatabase.save(invoice2)
+        invoiceRepository.save(invoice1)
+        invoiceRepository.save(invoice2)
     }
 
     void clearDatabase() {
@@ -117,16 +118,10 @@ class TaxCalculatorServiceIntegrationTest extends Specification {
     }
 
     void deleteInvoices() {
-        List<Invoice> list = invoiceDatabase.getAll()
-        for(Invoice i : list) {
-            invoiceDatabase.delete(i.getId())
-        }
+        invoiceRepository.deleteAll()
     }
 
     void deleteCompanies() {
-        List<Company> list = companyDatabase.getAll()
-        for(Company c : list) {
-            companyDatabase.delete(c.getId())
-        }
+        companyRepository.deleteAll()
     }
 }

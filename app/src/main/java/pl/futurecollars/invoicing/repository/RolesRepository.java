@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.roles;
+package pl.futurecollars.invoicing.repository;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +7,4 @@ import pl.futurecollars.invoicing.model.Role;
 
 @Repository
 public interface RolesRepository extends JpaRepository<Role, UUID> {
-
-    Role findByAuthority(String authority);
 }

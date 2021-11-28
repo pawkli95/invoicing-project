@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.futurecollars.invoicing.db.users.UserRepository;
 import pl.futurecollars.invoicing.model.User;
+import pl.futurecollars.invoicing.repository.UserRepository;
 
 @RequiredArgsConstructor
 @Component

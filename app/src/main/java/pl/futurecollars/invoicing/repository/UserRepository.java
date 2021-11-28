@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.users;
+package pl.futurecollars.invoicing.repository;
 
 import java.util.Optional;
 import java.util.UUID;

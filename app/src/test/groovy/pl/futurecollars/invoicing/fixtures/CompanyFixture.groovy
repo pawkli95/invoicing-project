@@ -18,6 +18,7 @@ class CompanyFixture {
             taxId.append(r);
         }
        return Company.builder()
+               .id(UUID.randomUUID())
                .taxIdentificationNumber(taxId.toString())
                .name("Firma")
                .address("Firmowa 1")
