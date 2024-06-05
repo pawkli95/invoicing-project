@@ -10,4 +10,4 @@ jobs:
       - name: First
         run: echo "First"
       - name: Github
-        run: ${{ toJson(github) }}
+        run: "${{ toJSON(github) }}"
