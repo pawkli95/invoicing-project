@@ -17,8 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.futurecollars.invoicing.db.users.UserRepository;
 import pl.futurecollars.invoicing.model.Role;
+import pl.futurecollars.invoicing.repository.UserRepository;
 
 @EnableJpaRepositories(basePackages = "pl.futurecollars.invoicing.db.users")
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/api/users/register").permitAll()
                 .antMatchers("/api/users/roles").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/").hasAuthority(Role.ADMIN)
+                .antMatchers(HttpMethod.GET, "/api/users").hasAuthority(Role.ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority(Role.ADMIN)
                 .antMatchers("/api/invoices/**").hasAuthority(Role.USER)
                 .antMatchers("/api/companies/**").hasAuthority(Role.USER)

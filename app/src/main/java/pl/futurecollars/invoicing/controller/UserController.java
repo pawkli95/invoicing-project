@@ -20,7 +20,7 @@ import pl.futurecollars.invoicing.dto.UserDto;
 import pl.futurecollars.invoicing.service.UserService;
 
 @Api(tags = {"user-controller"})
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200/")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,31 +29,29 @@ public class UserController {
 
     private final UserService userService;
 
-    @CrossOrigin
     @ApiOperation(value = "Register new user")
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UserDto user) {
-        userService.saveUser(user);
+    public ResponseEntity<UserDto> register(@RequestBody UserDto user) {
         log.info("Registered user" + user.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
     @ApiOperation(value = "Get all users")
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAll());
     }
 
     @ApiOperation(value = "Delete user by id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        userService.deleteUser(id);
+        userService.delete(id);
         return ResponseEntity.accepted().build();
     }
 
     @ApiOperation(value = "Get user by id")
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(userService.getUser(id));
+        return ResponseEntity.ok().body(userService.getById(id));
     }
 }

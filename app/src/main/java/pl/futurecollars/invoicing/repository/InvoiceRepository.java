@@ -1,4 +1,4 @@
-package pl.futurecollars.invoicing.db.invoices;
+package pl.futurecollars.invoicing.repository;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +10,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 
     @Override
     @Query("select distinct i from Invoice i left join fetch i.invoiceEntries left join fetch "
-            + "i.seller left join fetch i. buyer")
+            + "i.seller left join fetch i.buyer")
     List<Invoice> findAll();
+
+    boolean existsByNumber(String number);
 }

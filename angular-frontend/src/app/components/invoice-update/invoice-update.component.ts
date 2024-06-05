@@ -129,7 +129,8 @@ export class InvoiceUpdateComponent implements OnInit {
       date: this.invoice.date,
       ...this.formGroup.value
     }).subscribe()
-    this.goBack()
+    this.router.navigate(['invoices'])
+
   }
 
   goBack() {

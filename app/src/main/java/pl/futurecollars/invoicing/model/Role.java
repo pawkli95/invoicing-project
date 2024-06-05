@@ -17,6 +17,7 @@ public class Role implements GrantedAuthority {
     public static final String USER = "USER";
     public static final String ADMIN = "ADMIN";
 
+    @ApiModelProperty(value = "Id", required = true)
     @Id
     @GeneratedValue
     private UUID id;
