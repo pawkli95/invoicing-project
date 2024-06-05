@@ -1,0 +1,13 @@
+name: Workflow 1
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: First
+        run: echo "First"
+      - name: Github
+        run: ${{ toJson(github) }}
